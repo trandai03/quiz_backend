@@ -109,14 +109,6 @@ public class JwtFilter extends OncePerRequestFilter {
 //                Pair.of(String.format("%s/users/**", apiPrefix), "GET"),
 //                Pair.of(String.format("%s/roles", apiPrefix), "GET"),
 
-
-                //Menu
-                Pair.of(String.format("%s/menu/**", apiPrefix), "GET"),
-
-//                Pair.of(String.format("%s/menu", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/menu/**", apiPrefix), "DELETE"),
-//                Pair.of(String.format("%s/menu/**", apiPrefix), "PUT"),
-
                 //Web-setting
                 Pair.of(String.format("%s/web-settings", apiPrefix), "GET"),
                 Pair.of(String.format("%s/web-settings/**", apiPrefix), "PUT"),
@@ -125,26 +117,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 // Category
 //                Pair.of(String.format("%s/categories", apiPrefix),"GET"),
 //                Pair.of(String.format("%s/categories/**", apiPrefix),"POST"),
-                Pair.of(String.format("%s/categories/**", apiPrefix), "GET"),
-
-                // notification
-                Pair.of(String.format("%s/notifications/**", apiPrefix), "POST"),
-
-                // orders
-                Pair.of(String.format("%s/orders", apiPrefix), "POST"),
-                Pair.of(String.format("%s/orders/getOrderDetails", apiPrefix), "GET"),
-
-                // Table
-                Pair.of(String.format("%s/tables/all", apiPrefix), "GET"),
 
                 //home
                 Pair.of("/home/**", "GET"),
-
-                //Pay
-                Pair.of(String.format("%s/payment/**", apiPrefix), "POST"),
-
-                // img
-                Pair.of(String.format("%s/menu/getUrlImage", apiPrefix), "POST"),
 
                 // device token
 

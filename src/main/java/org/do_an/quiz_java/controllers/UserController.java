@@ -33,27 +33,13 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Response> login(
-            @RequestBody @Valid UserLoginDTO userLoginDTO,
-            @RequestParam(defaultValue = "false") boolean isAdmin
+            @RequestBody @Valid UserLoginDTO userLoginDTO
     ) {
 
         try {
             String tokenGenerate = userService.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
 
             User userLoginDetail = userService.getUserDetailFromToken(tokenGenerate);
-
-            boolean hasRoleAdmin = userLoginDetail.getAuthorities().stream()
-                    .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
-
-            if ((isAdmin && !hasRoleAdmin) || (!isAdmin && hasRoleAdmin)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                        new Response("error", "You are not authorized to access this resource", null));
-
-//                HttpHeaders headers = new HttpHeaders();
-//                headers.add("Location", "/error/403");
-//                return new ResponseEntity<>(headers, HttpStatus.FOUND);
-
-            }
 
             Token token = tokenService.addToken(userLoginDetail, tokenGenerate); // Save token to database
 
