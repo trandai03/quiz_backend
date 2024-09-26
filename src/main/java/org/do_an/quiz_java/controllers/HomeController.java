@@ -23,4 +23,10 @@ public class HomeController {
                 Please check the API documentation at /redoc.html
                 """;
     }
+    @GetMapping("/")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String Hello() {
+        return "Hello World";
+
+    }
 }

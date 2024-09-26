@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @ToString
 public class LoginResponse {
-    private String name;
+    private String username;
     private String email;
     private String token;
 }
