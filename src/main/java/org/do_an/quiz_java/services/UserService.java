@@ -2,6 +2,7 @@ package org.do_an.quiz_java.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.dto.UpdatePasswordDTO;
 import org.do_an.quiz_java.dto.UpdateUserDTO;
 import org.do_an.quiz_java.dto.UserDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
@@ -125,23 +126,33 @@ public class UserService  {
             existingUser.setEmail(updatedUserDTO.getEmail());
         }
 
-        if (updatedUserDTO.getNewPassword() != null
-                && !updatedUserDTO.getNewPassword().isEmpty()) {
-            if (!updatedUserDTO.getPassword().equals(updatedUserDTO.getRetypePassword())) { // check retype password
-                throw new DataNotFoundException("Password not match");
-            }
-
-            String newPassword = updatedUserDTO.getNewPassword();
-            String encodePassword = passwordEncoder.encode(newPassword);
-
-            existingUser.setPassword(encodePassword);
-
+        if (updatedUserDTO.getUsername() != null) {
+            existingUser.setUsername(updatedUserDTO.getUsername());
         }
 
         return userRepository.save(existingUser);
 
     }
+    @Transactional(rollbackFor = Exception.class)
+    public User updatePassword(Integer userId, UpdatePasswordDTO updatePasswordDTO) throws Exception {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!passwordEncoder.matches(updatePasswordDTO.getPassword(), existingUser.getPassword())) {
+            throw new BadCredentialsException("Password not match");
+        }
+        if (updatePasswordDTO.getNewPassword() != null
+                && !updatePasswordDTO.getNewPassword().isEmpty()) {
+            if (!updatePasswordDTO.getNewPassword().equals(updatePasswordDTO.getRetypePassword())) { // check retype password
+                throw new DataNotFoundException("Password not match");
+            }
 
+            String newPassword = updatePasswordDTO.getNewPassword();
+            String encodePassword = passwordEncoder.encode(newPassword);
+            existingUser.setPassword(encodePassword);
+        }
+        return userRepository.save(existingUser);
+
+    }
     @Transactional
     public User deleteUserByUserId(Integer userId) throws Exception {
         User user = userRepository.findById(userId)

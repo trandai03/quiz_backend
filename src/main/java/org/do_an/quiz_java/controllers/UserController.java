@@ -3,6 +3,7 @@ package org.do_an.quiz_java.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.dto.UpdatePasswordDTO;
 import org.do_an.quiz_java.dto.UpdateUserDTO;
 import org.do_an.quiz_java.dto.UserDTO;
 import org.do_an.quiz_java.dto.UserLoginDTO;
@@ -74,9 +75,21 @@ public class UserController {
             @RequestBody @Valid UpdateUserDTO updateUserDTO
     ) {
         try {
-            User userDTOUpdated = userService.updateInfo(user.getId() , updateUserDTO);
+                User userDTOUpdated = userService.updateInfo(user.getId() , updateUserDTO);
+                return ResponseEntity.ok().body(new Response("success", "User updated successfully", UserResponse.fromUser(userDTOUpdated)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));
+        }
+    }
 
-
+    @PutMapping("/change-password")
+    public ResponseEntity<Response> changePassword(
+//            @PathVariable Integer userId,
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid UpdatePasswordDTO updatePasswordDTO
+    ) {
+        try {
+            User userDTOUpdated = userService.updatePassword(user.getId() , updatePasswordDTO);
             return ResponseEntity.ok().body(new Response("success", "User updated successfully", UserResponse.fromUser(userDTOUpdated)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));

@@ -17,10 +17,8 @@ public class UpdateUserDTO {
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email")
     private String email;
 
-    private String password;
 
-    private String retypePassword;
 
-    private String newPassword;
+
 
 }
