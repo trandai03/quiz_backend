@@ -1,17 +1,20 @@
 package org.do_an.quiz_java.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "questions")
 public class Question {
     @Id
@@ -19,18 +22,25 @@ public class Question {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
+
     @Column(name = "question")
     private String question;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "created_at",nullable = false)
+    private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QuestionChoice> questionChoice;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class UserService  {
     private final TokenRepository tokenRepository;
 //    private final ModelMapper modelMapper;
@@ -124,13 +125,13 @@ public class UserService  {
             existingUser.setEmail(updatedUserDTO.getEmail());
         }
 
-        if (updatedUserDTO.getPassword() != null
-                && !updatedUserDTO.getPassword().isEmpty()) {
+        if (updatedUserDTO.getNewPassword() != null
+                && !updatedUserDTO.getNewPassword().isEmpty()) {
             if (!updatedUserDTO.getPassword().equals(updatedUserDTO.getRetypePassword())) { // check retype password
                 throw new DataNotFoundException("Password not match");
             }
 
-            String newPassword = updatedUserDTO.getPassword();
+            String newPassword = updatedUserDTO.getNewPassword();
             String encodePassword = passwordEncoder.encode(newPassword);
 
             existingUser.setPassword(encodePassword);

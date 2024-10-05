@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -66,13 +67,14 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update")
     public ResponseEntity<Response> update(
-            @PathVariable Integer userId,
+//            @PathVariable Integer userId,
+            @AuthenticationPrincipal User user,
             @RequestBody @Valid UpdateUserDTO updateUserDTO
     ) {
         try {
-            User userDTOUpdated = userService.updateInfo(userId, updateUserDTO);
+            User userDTOUpdated = userService.updateInfo(user.getId() , updateUserDTO);
 
 
             return ResponseEntity.ok().body(new Response("success", "User updated successfully", UserResponse.fromUser(userDTOUpdated)));

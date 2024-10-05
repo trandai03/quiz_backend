@@ -24,7 +24,7 @@ public class Result {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "completed_at")
+    @Column(name = "completed_at",nullable = false)
     private LocalDateTime completedAt;
 
     @Column(name = "score")
@@ -33,4 +33,8 @@ public class Result {
     @Column(name = "total_questions")
     private Integer totalQuestions;
 
+    @PrePersist
+    protected void onCreate() {
+        this.completedAt = LocalDateTime.now();
+    }
 }

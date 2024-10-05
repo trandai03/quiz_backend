@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class UpdateUserDTO {
-    private String fullname;
+    private String username;
 
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email")
     private String email;
@@ -20,4 +20,7 @@ public class UpdateUserDTO {
     private String password;
 
     private String retypePassword;
+
+    private String newPassword;
+
 }

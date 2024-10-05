@@ -1,5 +1,7 @@
 package org.do_an.quiz_java.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,12 +34,16 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<Token> tokens = new LinkedHashSet<>();
-
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 //        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
