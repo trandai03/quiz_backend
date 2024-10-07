@@ -74,7 +74,22 @@ public class QuizService {
         return quizRepository.searchByName(query, pageable);
     }
 
-    public Page<Quiz> findQuizzesByUser(User user, Pageable pageable) {
-        return quizRepository.findByCreatedBy(user, pageable);
+    public List<QuizResponse> findQuizByUser(User user) {
+        return quizRepository.findByCreatedBy(user).stream()
+                .map(QuizResponse::fromEntity)
+                .collect(Collectors.toList());
+
+    }
+    public List<QuizResponse> findQuizByCategory(Integer categoryId) {
+        return quizRepository.findByCategory(categoryService.find(categoryId)).stream()
+                .map(QuizResponse::fromEntity)
+                .collect(Collectors.toList());
+
+    }
+    public List<QuizResponse> findAllQuiz() {
+        return quizRepository.findAll().stream()
+                .map(QuizResponse::fromEntity)
+                .collect(Collectors.toList());
+
     }
 }

@@ -16,6 +16,5 @@ public class QuizDTO {
     String description;
     Integer category_id;
     List<QuestionDTO> questions;
-
     Boolean isPublished;
 }

@@ -81,5 +81,19 @@ public class QuizController {
 //        }
 //
 //    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user")
+    public List<QuizResponse> findQuizByUser(@AuthenticationPrincipal User user) {
+        return quizService.findQuizByUser(user);
+    }
+    @GetMapping("category/{category_id}")
+    public List<QuizResponse> findQuizByCategory(@PathVariable Integer category_id) {
+        return quizService.findQuizByCategory(category_id);
+    }
 
+    @GetMapping("/getAllQuiz")
+    public List<QuizResponse> findAllQuiz() {
+
+        return quizService.findAllQuiz();
+    }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 @Value
 @ToString
 public class QuestionDTO  {
-    Integer quiz_id;
     String question;
     List<QuestionChoiceDTO> questionChoiceDTOS;
 

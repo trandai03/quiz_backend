@@ -1,14 +1,19 @@
 package org.do_an.quiz_java.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.model.Category;
 import org.do_an.quiz_java.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
+@Slf4j
 public class CategoryService {
     private  final CategoryRepository categoryRepository;
 
@@ -20,5 +25,8 @@ public class CategoryService {
             System.out.println("No value present in Optional");
             return null;
         }
+    }
+    public List<Category> findAll(){
+        return categoryRepository.findAll();
     }
 }
