@@ -2,6 +2,7 @@ package org.do_an.quiz_java.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Value
@@ -11,7 +12,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class ResultDTO {
-    Integer quiz_id;
-    List<AnswerDTO> answerDTOS;
+    Integer quizId;
+    List<QuestionResultDTO> questionResultDTOS;
+    Integer score;
+    LocalDateTime completedAt;
+    Integer submittedTime;
+
 
 }

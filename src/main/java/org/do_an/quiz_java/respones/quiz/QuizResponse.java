@@ -22,7 +22,7 @@ public class QuizResponse {
     private List<Question> questions;
     private Boolean isPublished ;
     private Category category;
-    private String usernameCreated; ;
+    private String usernameCreated;
 
 
     public  static QuizResponse fromEntity(Quiz quiz) {

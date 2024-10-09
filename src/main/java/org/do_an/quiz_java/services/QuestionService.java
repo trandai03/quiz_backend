@@ -42,4 +42,12 @@ public class QuestionService {
         // Sử dụng ModelMapper để chuyển đổi
         return modelMapper.map(questionDTO, Question.class);
     }
+    public Question find(Integer id){
+        return questionRepository.findById(id).get();
+    }
+
+    public Boolean checkAnswer(Integer questionId, Integer choiceId) {
+        Question question = questionRepository.findById(questionId).get();
+        return question.getQuestionChoice().stream().anyMatch(choice -> choice.getId().equals(choiceId) && choice.getIsCorrect());
+    }
 }

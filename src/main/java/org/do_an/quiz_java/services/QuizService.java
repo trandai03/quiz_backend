@@ -2,21 +2,24 @@ package org.do_an.quiz_java.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.dto.QuestionResultDTO;
 import org.do_an.quiz_java.dto.QuizDTO;
+import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
-import org.do_an.quiz_java.model.Question;
-import org.do_an.quiz_java.model.Quiz;
-import org.do_an.quiz_java.model.User;
+import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
+import org.do_an.quiz_java.respones.quiz.ResultResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,18 +33,37 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
     private final CategoryService categoryService;
+    private final QuestionResultService questionResultService;
 
-    public QuizResponse save(QuizDTO quizDTO, User user) {
+    private final CloudinaryService cloudinaryService;
+
+    public QuizResponse save(QuizDTO quizDTO,  User user) {
         Quiz quiz = Quiz.builder()
                 .title(quizDTO.getTitle())
                 .category(categoryService.find(quizDTO.getCategory_id()))
                 .createdBy(user)
                 .description(quizDTO.getDescription())
                 .isPublished(quizDTO.getIsPublished())
+                .totalQuestions(quizDTO.getQuestions().size())
                 .createdBy(user).build();
 //        quizRepository.save(quiz);
+
         questionService.save(quizDTO.getQuestions(),quiz);
         quiz = quizRepository.save(quiz);
+        return QuizResponse.fromEntity(quiz);
+    }
+    public QuizResponse updateQuizWithImage(MultipartFile file, Integer quizId) throws DataNotFoundException {
+        Quiz quiz = findByQuizId(quizId);
+        try {
+            String imageUrl = storeFile(quiz.getId(), file);
+            log.error("Error while uploading image" + imageUrl);
+
+            quiz.setImage(imageUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Error while uploading image");
+        }
+        quizRepository.save(quiz);
         return QuizResponse.fromEntity(quiz);
     }
 
@@ -91,5 +113,58 @@ public class QuizService {
                 .map(QuizResponse::fromEntity)
                 .collect(Collectors.toList());
 
+    }
+    private String storeFile(Integer quizId, MultipartFile file) throws Exception {
+        if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
+            return "False";
+        }
+        String contentType = file.getContentType();
+        if(contentType == null || !contentType.startsWith("image/")) {
+            return "False";
+        }
+        String folerName = "image";
+        Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, "image");
+        String imageUrl = uploadResult.get("url").toString();
+
+        return imageUrl;
+
+    }
+    public void delete(Integer id) {
+        quizRepository.deleteById(id);
+    }
+    public ResultResponse submit(ResultDTO resultDTO, User user) {
+        Quiz quiz = quizRepository.findByQuizId(resultDTO.getQuizId());
+        Result result = Result.builder()
+                .quiz(quiz)
+                .user(user)
+                .score(resultDTO.getScore())
+                .completedAt(resultDTO.getCompletedAt())
+                .submittedTime(resultDTO.getSubmittedTime())
+                .build();
+        List<Question> questions = quiz.getQuestions();
+        List<QuestionResultDTO> questionResultDTOS = resultDTO.getQuestionResultDTOS();
+        int totalQuestions = questions.size();
+        int totalCorrect = 0;
+        for (int i = 0; i < totalQuestions; i++) {
+
+            QuestionResultDTO questionResultDTO = questionResultDTOS.get(i);
+            Boolean isCorrect =questionService.checkAnswer(questionResultDTO.getQuestionId(), questionResultDTO.getIsSelected());
+
+            if (isCorrect) {
+                totalCorrect++;
+            }
+            QuestionResult questionResult = QuestionResult.builder()
+                    .question(questions.get(i))
+                    .isCorrect(isCorrect)
+                    .result(result)
+                    .build();
+            questionResultService.save(questionResult);
+
+        }
+        if(totalCorrect != resultDTO.getScore()) {
+            log.error("Error while calculating score");
+        }
+
+        return ResultResponse.fromEntity(result);
     }
 }

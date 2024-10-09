@@ -1,22 +1,27 @@
 package org.do_an.quiz_java.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "questionresults")
-public class Questionresult {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "question_result")
+public class QuestionResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "result_id")
     private Result result;
@@ -29,9 +34,5 @@ public class Questionresult {
     @Column(name = "is_correct")
     private Boolean isCorrect;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private User user;
 
 }

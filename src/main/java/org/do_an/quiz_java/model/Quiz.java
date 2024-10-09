@@ -55,4 +55,10 @@ public class Quiz {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @Column(name = "image")
+    private String image;
+
+    @Column(name = "total_questions")
+    private Integer totalQuestions;
 }

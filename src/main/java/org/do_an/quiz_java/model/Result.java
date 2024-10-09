@@ -1,8 +1,7 @@
 package org.do_an.quiz_java.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,6 +11,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "results")
 public class Result {
     @Id
@@ -30,8 +32,16 @@ public class Result {
     @Column(name = "score")
     private Integer score;
 
-    @Column(name = "total_questions")
-    private Integer totalQuestions;
+//    @Column(name = "total_questions")
+//    private Integer totalQuestions;
+
+    @Column(name = "submitted_time")
+    private Integer submittedTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 
     @PrePersist
     protected void onCreate() {
