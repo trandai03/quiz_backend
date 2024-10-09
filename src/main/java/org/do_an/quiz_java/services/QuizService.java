@@ -9,9 +9,8 @@ import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
-import org.do_an.quiz_java.respones.quiz.ResultResponse;
+import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +32,7 @@ public class QuizService {
     private final QuestionService questionService;
     private final CategoryService categoryService;
     private final QuestionResultService questionResultService;
-
+    private final ResultService resultService;
     private final CloudinaryService cloudinaryService;
 
     public QuizResponse save(QuizDTO quizDTO,  User user) {
@@ -133,38 +131,6 @@ public class QuizService {
         quizRepository.deleteById(id);
     }
     public ResultResponse submit(ResultDTO resultDTO, User user) {
-        Quiz quiz = quizRepository.findByQuizId(resultDTO.getQuizId());
-        Result result = Result.builder()
-                .quiz(quiz)
-                .user(user)
-                .score(resultDTO.getScore())
-                .completedAt(resultDTO.getCompletedAt())
-                .submittedTime(resultDTO.getSubmittedTime())
-                .build();
-        List<Question> questions = quiz.getQuestions();
-        List<QuestionResultDTO> questionResultDTOS = resultDTO.getQuestionResultDTOS();
-        int totalQuestions = questions.size();
-        int totalCorrect = 0;
-        for (int i = 0; i < totalQuestions; i++) {
-
-            QuestionResultDTO questionResultDTO = questionResultDTOS.get(i);
-            Boolean isCorrect =questionService.checkAnswer(questionResultDTO.getQuestionId(), questionResultDTO.getIsSelected());
-
-            if (isCorrect) {
-                totalCorrect++;
-            }
-            QuestionResult questionResult = QuestionResult.builder()
-                    .question(questions.get(i))
-                    .isCorrect(isCorrect)
-                    .result(result)
-                    .build();
-            questionResultService.save(questionResult);
-
-        }
-        if(totalCorrect != resultDTO.getScore()) {
-            log.error("Error while calculating score");
-        }
-
-        return ResultResponse.fromEntity(result);
+        return resultService.submit(resultDTO,user);
     }
 }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,6 +43,9 @@ public class Result {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<QuestionResult> questionResults;
 
     @PrePersist
     protected void onCreate() {

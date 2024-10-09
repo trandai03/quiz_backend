@@ -1,11 +1,7 @@
-package org.do_an.quiz_java.respones.quiz;
+package org.do_an.quiz_java.respones.result;
 
 import lombok.*;
-import org.do_an.quiz_java.dto.QuestionResultDTO;
-import org.do_an.quiz_java.model.Category;
-import org.do_an.quiz_java.model.Question;
 import org.do_an.quiz_java.model.Result;
-import org.do_an.quiz_java.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,18 +12,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResultResponse {
+    Integer id;
     Integer quizId;
-    //List<QuestionResultDTO> questionResultDTOS;
     Integer score;
     LocalDateTime completedAt;
     Integer submittedTime;
     String username;
+    List<QuestionResultResponse> resultQuestionResponses;
     public static ResultResponse fromEntity(Result result) {
         return ResultResponse.builder()
+                .id(result.getId())
                 .quizId(result.getQuiz().getId())
                 .score(result.getScore())
                 .completedAt(result.getCompletedAt())
                 .submittedTime(result.getSubmittedTime())
+                .resultQuestionResponses(QuestionResultResponse.fromEntityList(result.getQuestionResults()))
                 .username(result.getUser().getUsername())
                 .build();
     }

@@ -34,5 +34,8 @@ public class QuestionResult {
     @Column(name = "is_correct")
     private Boolean isCorrect;
 
+    @Column(name = "selected_choice_id")
+    private Integer selectedChoiceId;
+
 
 }
