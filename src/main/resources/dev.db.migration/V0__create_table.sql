@@ -1,5 +1,4 @@
 -- Table structure for table `categories`
-DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `name` varchar(255) DEFAULT NULL,
@@ -45,7 +44,7 @@ CREATE TABLE `question_result` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `result_id` int(11) DEFAULT NULL,
                                    `question_id` int(11) DEFAULT NULL,
-                                   `selected_answer_id` int(11) DEFAULT NULL,
+                                   `selected_choice_id` int(11) DEFAULT NULL,
                                    `is_correct` tinyint(1) DEFAULT 0,
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `id` (`id`),
