@@ -123,10 +123,10 @@ public class QuizController {
     }
     @DeleteMapping("/{quiz_id}")
     @PreAuthorize("isAuthenticated()")
-    public void delete(@AuthenticationPrincipal User user, @PathVariable Integer quizId) throws DataNotFoundException {
-        if (!quizService.findByQuizId(quizId).getCreatedBy().getId().equals(user.getId())) {
+    public void delete(@AuthenticationPrincipal User user, @PathVariable Integer quiz_id) throws DataNotFoundException {
+        if (!quizService.findByQuizId(quiz_id).getCreatedBy().getId().equals(user.getId())) {
             throw new DataNotFoundException("You are not the owner of this quiz");
         }
-        quizService.delete( quizId);
+        quizService.delete( quiz_id);
     }
 }
