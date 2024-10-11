@@ -23,6 +23,7 @@ public class QuizResponse {
     private Boolean isPublished ;
     private Category category;
     private String usernameCreated;
+    private String image;
 
 
     public  static QuizResponse fromEntity(Quiz quiz) {
@@ -35,6 +36,7 @@ public class QuizResponse {
             .isPublished(quiz.getIsPublished())
             .category(quiz.getCategory())
             .usernameCreated(quiz.getCreatedBy().getUsername())
+            .image(quiz.getImage())
             .build();
     }
 }

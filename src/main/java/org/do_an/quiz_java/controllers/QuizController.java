@@ -15,6 +15,7 @@ import org.do_an.quiz_java.services.QuizService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -55,18 +56,17 @@ public class QuizController {
 //        }
         return quizService.save(quizDTO, user);
     }
-    @PostMapping(value = "/image/{quiz_id}", consumes = "multipart/form-data")
+    @PostMapping(value = "/image/{quiz_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    @ResponseStatus(HttpStatus.CREATED)
     public QuizResponse uploadImage(@AuthenticationPrincipal User user,
-                                    @ModelAttribute("file") MultipartFile file,
-                                    @RequestParam Integer quizId
+                                    @PathVariable Integer quiz_id,
+                                    @RequestPart("file") MultipartFile file
     ) throws DataNotFoundException {
+        if (!quizService.findByQuizId(quiz_id).getCreatedBy().getId().equals(user.getId())) {
+            throw new DataNotFoundException("You are not the owner of this quiz");
+        }
 
-//        if(result.hasErrors()){
-//            System.out.print("Một hoặc nhiều trường truyền vào không hợp lệ!") ;
-//        }
-        return quizService.updateQuizWithImage(file ,quizId );
+        return quizService.updateQuizWithImage(file, quiz_id);
     }
     @GetMapping("search")
     public Page<Quiz> searchAll(Pageable pageable, @RequestParam(required = true) String filter,

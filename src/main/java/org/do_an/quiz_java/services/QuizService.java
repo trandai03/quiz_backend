@@ -53,12 +53,10 @@ public class QuizService {
     public QuizResponse updateQuizWithImage(MultipartFile file, Integer quizId) throws DataNotFoundException {
         Quiz quiz = findByQuizId(quizId);
         try {
-            String imageUrl = storeFile(quiz.getId(), file);
+            String imageUrl = storeFile(file);
             log.error("Error while uploading image" + imageUrl);
-
             quiz.setImage(imageUrl);
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("Error while uploading image");
         }
         quizRepository.save(quiz);
@@ -112,7 +110,7 @@ public class QuizService {
                 .collect(Collectors.toList());
 
     }
-    private String storeFile(Integer quizId, MultipartFile file) throws Exception {
+    private String storeFile(MultipartFile file) throws Exception {
         if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
             return "False";
         }
@@ -120,11 +118,9 @@ public class QuizService {
         if(contentType == null || !contentType.startsWith("image/")) {
             return "False";
         }
-        String folerName = "image";
-        Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, "image");
-        String imageUrl = uploadResult.get("url").toString();
-
-        return imageUrl;
+        String folderName = "image";
+        Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, folderName);
+        return uploadResult.get("url").toString();
 
     }
     public void delete(Integer id) {
