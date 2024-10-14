@@ -122,7 +122,24 @@ ADD CONSTRAINT `question_result_ibfk_3` FOREIGN KEY (`selected_choice_id`) REFER
 -- Add foreign key for token
 ALTER TABLE `token`
     ADD CONSTRAINT `token_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
-
+INSERT INTO `categories` (`name`)
+VALUES
+    ('Computer Science'),
+    ('Mathematics'),
+    ('Physics'),
+    ('Biology'),
+    ('Chemistry'),
+    ('Mechanical Engineering'),
+    ('Electrical Engineering'),
+    ('Business Administration'),
+    ('Economics'),
+    ('Psychology'),
+    ('Sociology'),
+    ('Art History'),
+    ('Literature'),
+    ('Political Science'),
+    ('Other'),
+    ('Law');
 
 -- -- Step 1: Create categories table
 -- CREATE TABLE `categories` (

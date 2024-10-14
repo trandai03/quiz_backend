@@ -7,6 +7,7 @@ import org.do_an.quiz_java.dto.QuizDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.*;
+import org.do_an.quiz_java.repositories.CategoryRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
@@ -34,7 +35,7 @@ public class QuizService {
     private final QuestionResultService questionResultService;
     private final ResultService resultService;
     private final CloudinaryService cloudinaryService;
-
+    private final CategoryRepository categoryRepository;
     public QuizResponse save(QuizDTO quizDTO,  User user) {
         Quiz quiz = Quiz.builder()
                 .title(quizDTO.getTitle())
@@ -128,5 +129,33 @@ public class QuizService {
     }
     public ResultResponse submit(ResultDTO resultDTO, User user) {
         return resultService.submit(resultDTO,user);
+    }
+
+    public QuizResponse update(QuizDTO quizDTO, Integer quizId) throws DataNotFoundException {
+        Quiz existingQuiz = findByQuizId(quizId);
+        Category category = categoryRepository.findById(quizDTO.getCategory_id())
+                .orElseThrow(() -> new DataNotFoundException("Category not found"));
+
+        if(existingQuiz == null) {
+            throw new DataNotFoundException("Quiz not found");
+        }
+        if (quizDTO.getTitle() != null){
+            existingQuiz.setTitle(quizDTO.getTitle());
+        }
+
+        if (quizDTO.getDescription() != null){
+            existingQuiz.setDescription(quizDTO.getDescription());
+        }
+        if(quizDTO.getIsPublished() != null){
+            existingQuiz.setIsPublished(quizDTO.getIsPublished());
+        }
+        if(quizDTO.getQuestions() != null){
+            existingQuiz.setTotalQuestions(quizDTO.getQuestions().size());
+        }
+        existingQuiz.setCategory(category);
+
+        quizRepository.save(existingQuiz);
+        questionService.update(quizDTO.getQuestions(),existingQuiz);
+        return QuizResponse.fromEntity(existingQuiz);
     }
 }

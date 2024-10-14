@@ -129,4 +129,14 @@ public class QuizController {
         }
         quizService.delete( quiz_id);
     }
+    @PutMapping("/{quiz_id}")
+    @PreAuthorize("isAuthenticated()")
+    public QuizResponse update(@AuthenticationPrincipal User user,
+                               @PathVariable Integer quiz_id,
+                               @RequestBody QuizDTO quizDTO) throws DataNotFoundException {
+        if (!quizService.findByQuizId(quiz_id).getCreatedBy().getId().equals(user.getId())) {
+            throw new DataNotFoundException("You are not the owner of this quiz");
+        }
+        return quizService.update(quizDTO, quiz_id);
+    }
 }

@@ -19,5 +19,6 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     //int countByQuizId(Integer quizId);
 
+    List<Question> findByQuiz(Quiz quiz);
 
 }
