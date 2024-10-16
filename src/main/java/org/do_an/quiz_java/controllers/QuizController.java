@@ -118,7 +118,7 @@ public class QuizController {
 //        if(result.hasErrors()){
 //            System.out.print("Một hoặc nhiều trường truyền vào không hợp lệ!") ;
 //        }
-        log.error("submit" + resultDTO);
+
         return quizService.submit(resultDTO, user);
     }
     @DeleteMapping("/{quiz_id}")

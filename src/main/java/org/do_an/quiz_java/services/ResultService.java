@@ -9,6 +9,7 @@ import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.repositories.ResultRepository;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ResultService {
     private  final ResultRepository resultRepository;
     private final QuizRepository quizRepository;
@@ -42,6 +44,8 @@ public class ResultService {
                 .completedAt(resultDTO.getCompletedAt())
                 .submittedTime(resultDTO.getSubmittedTime())
                 .build();
+        resultRepository.save(result);
+        resultRepository.flush();
         List<Question> questions = quiz.getQuestions();
         List<QuestionResultDTO> questionResultDTOS = resultDTO.getQuestionResultDTOS();
         int totalQuestions = questions.size();

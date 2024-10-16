@@ -42,6 +42,7 @@ public class Quiz {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Question> questions;
 
     @Column(name = "is_published", nullable = false)
