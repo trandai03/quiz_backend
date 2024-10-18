@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+
 public class ResultService {
     private  final ResultRepository resultRepository;
     private final QuizRepository quizRepository;
@@ -34,43 +34,82 @@ public class ResultService {
         return resultResponses;
 
     }
-
+    @Transactional
     public ResultResponse submit(ResultDTO resultDTO, User user) {
+        // Lấy quiz từ cơ sở dữ liệu
         Quiz quiz = quizRepository.findByQuizId(resultDTO.getQuizId());
-        Result result = Result.builder()
-                .quiz(quiz)
-                .user(user)
-                .score(resultDTO.getScore())
-                .completedAt(resultDTO.getCompletedAt())
-                .submittedTime(resultDTO.getSubmittedTime())
-                .build();
-        resultRepository.save(result);
-        resultRepository.flush();
         List<Question> questions = quiz.getQuestions();
         List<QuestionResultDTO> questionResultDTOS = resultDTO.getQuestionResultDTOS();
+        List<QuestionResult> questionResults = new ArrayList<>();
         int totalQuestions = questions.size();
         int totalCorrect = 0;
+
+        // Duyệt qua từng câu hỏi trong bài quiz
         for (int i = 0; i < totalQuestions; i++) {
-
+            Question question = questions.get(i);
             QuestionResultDTO questionResultDTO = questionResultDTOS.get(i);
-            Boolean isCorrect =questionService.checkAnswer(questionResultDTO.getQuestionId(), questionResultDTO.getIsSelected());
 
+            // Lấy danh sách đáp án đúng cho câu hỏi hiện tại
+            List<Integer> correctChoiceIds = questionService.getCorrectAnswerChoices(question.getId());
+
+            // Lấy danh sách các đáp án đã chọn bởi người dùng
+            List<Integer> selectedChoiceIds = questionResultDTO.getSelectedChoiceIds();
+
+            // Kiểm tra xem người dùng có chọn đúng tất cả các đáp án không
+            boolean isCorrect = selectedChoiceIds.size() == correctChoiceIds.size()
+                    && selectedChoiceIds.containsAll(correctChoiceIds);
+
+            // Nếu đáp án đúng, tăng biến đếm số câu đúng
             if (isCorrect) {
                 totalCorrect++;
             }
+//
+//            for(Integer selectedChoiceId : selectedChoiceIds){
+//                SelectedChoice selectedChoice = SelectedChoice.builder()
+//                        .choice(QuestionChoice.builder().id(selectedChoiceId).build())
+//                        .build();
+//                selectedChoices.add(selectedChoice);
+//            }
+            // Tạo đối tượng QuestionResult để lưu kết quả câu hỏi
             QuestionResult questionResult = QuestionResult.builder()
-                    .question(questions.get(i))
+                    .question(question)
                     .isCorrect(isCorrect)
-                    .selectedChoiceId(questionResultDTO.getIsSelected())
-                    .result(result)
                     .build();
-            questionResultService.save(questionResult);
 
-        }
-        if(totalCorrect != resultDTO.getScore()) {
-            log.error("Error while calculating score");
+            // Lưu các đáp án đã chọn vào bảng selected_choices
+            List<SelectedChoice> selectedChoices = new ArrayList<>();
+            for (Integer selectedChoiceId : selectedChoiceIds) {
+                SelectedChoice selectedChoice = SelectedChoice.builder()
+                        .questionResult(questionResult)
+                        .choice(QuestionChoice.builder().id(selectedChoiceId).build()) // Thiết lập đáp án đã chọn
+                        .build();
+                selectedChoices.add(selectedChoice); // Thêm vào danh sách selectedChoices
+            }
+            questionResult.setSelectedChoices(selectedChoices); // Lưu danh sách selectedChoices vào questionResult
+            // Thêm kết quả câu hỏi vào danh sách kết quả chung
+            questionResults.add(questionResult);
         }
 
+        // Tạo đối tượng Result để lưu toàn bộ kết quả quiz
+        Result result = Result.builder()
+                .quiz(quiz)
+                .user(user)
+                .score(totalCorrect) // Cập nhật điểm số chính xác
+                .questionResults(questionResults) // Lưu các kết quả câu hỏi
+                //.completedAt(resultDTO.getCompletedAt()) // Nếu cần lưu thời gian hoàn thành
+                .submittedTime(resultDTO.getSubmittedTime())
+                .build();
+
+        // Lưu kết quả vào cơ sở dữ liệu
+        resultRepository.save(result);
+
+        // Kiểm tra và log nếu điểm tính toán khác với điểm trong DTO
+        if (totalCorrect != resultDTO.getScore()) {
+            log.warn("Calculated score does not match expected score: expected=" + resultDTO.getScore() + ", actual=" + totalCorrect);
+        }
+
+        // Trả về kết quả của bài quiz
         return ResultResponse.fromEntity(result);
     }
+
 }

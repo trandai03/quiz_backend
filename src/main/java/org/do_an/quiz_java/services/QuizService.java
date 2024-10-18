@@ -158,4 +158,18 @@ public class QuizService {
         questionService.update(quizDTO.getQuestions(),existingQuiz);
         return QuizResponse.fromEntity(existingQuiz);
     }
+
+    public QuizResponse publishQuiz(Integer quizId) throws DataNotFoundException {
+        Quiz quiz = findByQuizId(quizId);
+        quiz.setIsPublished(true);
+        quizRepository.save(quiz);
+        return QuizResponse.fromEntity(quiz);
+    }
+
+    public QuizResponse unPublishQuiz(Integer quizId) throws DataNotFoundException {
+        Quiz quiz = findByQuizId(quizId);
+        quiz.setIsPublished(false);
+        quizRepository.save(quiz);
+        return QuizResponse.fromEntity(quiz);
+    }
 }

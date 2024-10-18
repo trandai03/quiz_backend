@@ -2,9 +2,7 @@ package org.do_an.quiz_java.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,6 +10,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @Entity
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "question_choice")
 public class QuestionChoice {
     @Id

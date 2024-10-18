@@ -139,4 +139,26 @@ public class QuizController {
         }
         return quizService.update(quizDTO, quiz_id);
     }
+
+    @PostMapping("/publish/{quiz_id}")
+    @PreAuthorize("isAuthenticated()")
+    public QuizResponse publishQuiz(@AuthenticationPrincipal User user,
+                                   @PathVariable Integer quiz_id
+                                   ) throws DataNotFoundException {
+        if (!quizService.findByQuizId(quiz_id).getCreatedBy().getId().equals(user.getId())) {
+            throw new DataNotFoundException("You are not the owner of this quiz");
+        }
+        return quizService.publishQuiz(quiz_id);
+    }
+
+    @PostMapping("/unpublish/{quiz_id}")
+    @PreAuthorize("isAuthenticated()")
+    public QuizResponse unPublishQuiz(@AuthenticationPrincipal User user,
+                                    @PathVariable Integer quiz_id
+    ) throws DataNotFoundException {
+        if (!quizService.findByQuizId(quiz_id).getCreatedBy().getId().equals(user.getId())) {
+            throw new DataNotFoundException("You are not the owner of this quiz");
+        }
+        return quizService.unPublishQuiz(quiz_id);
+    }
 }

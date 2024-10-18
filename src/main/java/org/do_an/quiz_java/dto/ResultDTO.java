@@ -15,7 +15,7 @@ public class ResultDTO {
     Integer quizId;
     List<QuestionResultDTO> questionResultDTOS;
     Integer score;
-    LocalDateTime completedAt;
+    //LocalDateTime completedAt;
     Integer submittedTime;
 
 

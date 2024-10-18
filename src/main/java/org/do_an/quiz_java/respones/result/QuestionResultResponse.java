@@ -22,7 +22,7 @@ public class QuestionResultResponse {
                 .id(questionResult.getId())
                 .isCorrect(questionResult.getIsCorrect())
                 .question(questionResult.getQuestion())
-                .selectedChoiceId(questionResult.getSelectedChoiceId())
+                //.selectedChoiceId(questionResult.getSelectedChoiceId())
                 .build();
     }
 

@@ -27,22 +27,23 @@ public class Result {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "completed_at",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
+
+    @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
     @Column(name = "score")
     private Integer score;
 
-//    @Column(name = "total_questions")
-//    private Integer totalQuestions;
-
     @Column(name = "submitted_time")
     private Integer submittedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+    @JoinColumn(name = "competition_id")
+    private Competition competition;
 
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QuestionResult> questionResults;
@@ -52,3 +53,6 @@ public class Result {
         this.completedAt = LocalDateTime.now();
     }
 }
+
+
+

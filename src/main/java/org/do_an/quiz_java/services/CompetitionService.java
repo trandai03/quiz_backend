@@ -44,4 +44,18 @@ public class CompetitionService {
                 .build();
         return CompetitionResponse.fromEntity(competitionRepository.save(competition));
     }
+
+    public void delete(Integer id) {
+        competitionRepository.deleteById(id);
+    }
+
+    public CompetitionResponse update(Integer id, CompetitionDTO competitionDTO) throws DataNotFoundException {
+        Competition competition = competitionRepository.findById(id).get();
+        competition.setDescription(competitionDTO.getDescription());
+        competition.setName(competitionDTO.getName());
+        competition.setQuiz(quizService.findByQuizId(competitionDTO.getQuizId()));
+        competition.setStartTime(competitionDTO.getStartTime());
+        competition.setTime(competitionDTO.getTime());
+        return CompetitionResponse.fromEntity(competitionRepository.save(competition));
+    }
 }

@@ -38,4 +38,14 @@ public class CompetitionController {
     public CompetitionResponse create(@AuthenticationPrincipal User user, @RequestBody CompetitionDTO competitionDTO) throws DataNotFoundException {
         return competitionService.create(competitionDTO, user);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable Integer id) {
+        competitionService.delete(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public CompetitionResponse update(@PathVariable Integer id, @RequestBody CompetitionDTO competitionDTO) throws DataNotFoundException {
+        return competitionService.update(id, competitionDTO);
+    }
 }

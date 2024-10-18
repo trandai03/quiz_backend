@@ -60,5 +60,11 @@ public class QuestionService {
         }
         return questionRepository.saveAll(questions);
     }
+    public List<Integer> getCorrectAnswerChoices(Integer questionId) {
+        return questionChoiceRepository.findByQuestionIdAndIsCorrect(questionId, true)
+                .stream()
+                .map(QuestionChoice::getId)
+                .collect(Collectors.toList());
+    }
 
 }
