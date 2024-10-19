@@ -25,8 +25,8 @@ public class CompetitionService {
     public List<CompetitionResponse> findAll() {
         return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntity).collect(Collectors.toList());
     }
-    public CompetitionResponse findById(Integer id) {
-        return CompetitionResponse.fromEntity(competitionRepository.findById(id).get());
+    public Competition findById(Integer id) {
+        return competitionRepository.findById(id).get();
     }
 
     public CompetitionResponse findByCode(String  code) {
@@ -42,7 +42,8 @@ public class CompetitionService {
                 .organizedBy(user)
                 .startTime(competitionDTO.getStartTime())
                 .build();
-        return CompetitionResponse.fromEntity(competitionRepository.save(competition));
+        competitionRepository.save(competition);
+        return CompetitionResponse.fromEntity(competitionRepository.findById(competition.getId()).get());
     }
 
     public void delete(Integer id) {

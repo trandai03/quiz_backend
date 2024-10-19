@@ -6,6 +6,7 @@ import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.do_an.quiz_java.services.ResultService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,4 +22,10 @@ public class ResultController {
     public List<ResultResponse> getResultByUser(@AuthenticationPrincipal User user){
         return resultService.getResultByUser(user);
     }
+
+    @GetMapping("/competition/{competitionId}")
+    public List<ResultResponse> getAllResultByCompetition( @PathVariable Integer competitionId){
+        return resultService.getResultByCompetition(competitionId);
+    }
+    
 }

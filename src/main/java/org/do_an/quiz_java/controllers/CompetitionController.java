@@ -26,7 +26,7 @@ public class CompetitionController {
 
     @GetMapping("/getById/{id}")
     public CompetitionResponse findById(@PathVariable Integer id) {
-        return competitionService.findById(id);
+        return CompetitionResponse.fromEntity(competitionService.findById(id));
     }
 
     @GetMapping("/getByCode/{code}")

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.QuestionResultDTO;
 import org.do_an.quiz_java.dto.QuizDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
+import org.do_an.quiz_java.dto.UpdateQuizDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.CategoryRepository;
@@ -61,7 +62,7 @@ public class QuizService {
             log.error("Error while uploading image");
         }
         quizRepository.save(quiz);
-        return QuizResponse.fromEntity(quiz);
+        return QuizResponse.fromEntity(quizRepository.findByQuizId(quizId));
     }
 
     public Page<Quiz> findAll(Pageable pageable) {
@@ -131,31 +132,31 @@ public class QuizService {
         return resultService.submit(resultDTO,user);
     }
 
-    public QuizResponse update(QuizDTO quizDTO, Integer quizId) throws DataNotFoundException {
-        Quiz existingQuiz = findByQuizId(quizId);
-        Category category = categoryRepository.findById(quizDTO.getCategory_id())
+    public QuizResponse update(UpdateQuizDTO updateQuizDTO) throws DataNotFoundException {
+        Quiz existingQuiz = findByQuizId(updateQuizDTO.getId());
+        Category category = categoryRepository.findById(updateQuizDTO.getCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Category not found"));
 
         if(existingQuiz == null) {
             throw new DataNotFoundException("Quiz not found");
         }
-        if (quizDTO.getTitle() != null){
-            existingQuiz.setTitle(quizDTO.getTitle());
+        if (updateQuizDTO.getTitle() != null){
+            existingQuiz.setTitle(updateQuizDTO.getTitle());
         }
 
-        if (quizDTO.getDescription() != null){
-            existingQuiz.setDescription(quizDTO.getDescription());
+        if (updateQuizDTO.getDescription() != null){
+            existingQuiz.setDescription(updateQuizDTO.getDescription());
         }
-        if(quizDTO.getIsPublished() != null){
-            existingQuiz.setIsPublished(quizDTO.getIsPublished());
+        if(updateQuizDTO.getIsPublished() != null){
+            existingQuiz.setIsPublished(updateQuizDTO.getIsPublished());
         }
-        if(quizDTO.getQuestions() != null){
-            existingQuiz.setTotalQuestions(quizDTO.getQuestions().size());
+        if(updateQuizDTO.getQuestions() != null){
+            existingQuiz.setTotalQuestions(updateQuizDTO.getQuestions().size());
         }
         existingQuiz.setCategory(category);
 
         quizRepository.save(existingQuiz);
-        questionService.update(quizDTO.getQuestions(),existingQuiz);
+        //questionService.update(updateQuizDTO.getQuestions(),existingQuiz);
         return QuizResponse.fromEntity(existingQuiz);
     }
 

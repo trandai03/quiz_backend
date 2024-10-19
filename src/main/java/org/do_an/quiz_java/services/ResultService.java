@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.QuestionResultDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.model.*;
+import org.do_an.quiz_java.repositories.CompetitionRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.repositories.ResultRepository;
 import org.do_an.quiz_java.respones.result.ResultResponse;
@@ -19,9 +20,11 @@ import java.util.List;
 @Slf4j
 
 public class ResultService {
+    private final CompetitionRepository competitionRepository;
     private  final ResultRepository resultRepository;
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
+    //private final CompetitionService competitionService;
     private final QuestionResultService questionResultService;
     public List<ResultResponse> getResultByUser(User user){
         List <Result> results =resultRepository.findByUser(user);
@@ -89,16 +92,18 @@ public class ResultService {
             // Thêm kết quả câu hỏi vào danh sách kết quả chung
             questionResults.add(questionResult);
         }
-
-        // Tạo đối tượng Result để lưu toàn bộ kết quả quiz
         Result result = Result.builder()
                 .quiz(quiz)
                 .user(user)
-                .score(totalCorrect) // Cập nhật điểm số chính xác
-                .questionResults(questionResults) // Lưu các kết quả câu hỏi
-                //.completedAt(resultDTO.getCompletedAt()) // Nếu cần lưu thời gian hoàn thành
+                .score(totalCorrect)
+                .questionResults(questionResults)
                 .submittedTime(resultDTO.getSubmittedTime())
                 .build();
+        // Tạo đối tượng Result để lưu toàn bộ kết quả quiz
+        if(resultDTO.getCompetitionId() != null){
+            Competition competition = competitionRepository.findById(resultDTO.getCompetitionId()).get();
+            result.setCompetition(competition);
+        }
 
         // Lưu kết quả vào cơ sở dữ liệu
         resultRepository.save(result);
@@ -112,4 +117,12 @@ public class ResultService {
         return ResultResponse.fromEntity(result);
     }
 
+    public List<ResultResponse> getResultByCompetition(Integer competitionId) {
+        List<Result> results = resultRepository.findByCompetition(competitionRepository.findById(competitionId).get());
+        List<ResultResponse> resultResponses = new ArrayList<>();
+        for (Result result : results) {
+            resultResponses.add(ResultResponse.fromEntity(result));
+        }
+        return resultResponses;
+    }
 }

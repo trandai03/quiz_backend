@@ -1,5 +1,6 @@
 package org.do_an.quiz_java.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -20,6 +21,7 @@ public class SelectedChoice {
     private Integer id;
 
     @NotNull
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "question_result_id", nullable = false)

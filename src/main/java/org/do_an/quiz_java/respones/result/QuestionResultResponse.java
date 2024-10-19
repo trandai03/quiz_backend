@@ -3,6 +3,7 @@ package org.do_an.quiz_java.respones.result;
 import lombok.*;
 import org.do_an.quiz_java.model.Question;
 import org.do_an.quiz_java.model.QuestionResult;
+import org.do_an.quiz_java.model.SelectedChoice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,13 @@ public class QuestionResultResponse {
     Integer id;
     Boolean isCorrect;
     Question question;
-    Integer selectedChoiceId;
+    List<SelectedChoice> selectedChoice;
     public static QuestionResultResponse fromEntity(QuestionResult questionResult){
         return QuestionResultResponse.builder()
                 .id(questionResult.getId())
                 .isCorrect(questionResult.getIsCorrect())
                 .question(questionResult.getQuestion())
-                //.selectedChoiceId(questionResult.getSelectedChoiceId())
+                .selectedChoice(questionResult.getSelectedChoices())
                 .build();
     }
 

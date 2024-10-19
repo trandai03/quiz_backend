@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.QuizDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
+import org.do_an.quiz_java.dto.UpdateQuizDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
@@ -129,15 +130,15 @@ public class QuizController {
         }
         quizService.delete( quiz_id);
     }
-    @PutMapping("/{quiz_id}")
+    @PutMapping("/update/{quiz_id}")
     @PreAuthorize("isAuthenticated()")
     public QuizResponse update(@AuthenticationPrincipal User user,
                                @PathVariable Integer quiz_id,
-                               @RequestBody QuizDTO quizDTO) throws DataNotFoundException {
+                               @RequestBody UpdateQuizDTO updateQuizDTO) throws DataNotFoundException {
         if (!quizService.findByQuizId(quiz_id).getCreatedBy().getId().equals(user.getId())) {
             throw new DataNotFoundException("You are not the owner of this quiz");
         }
-        return quizService.update(quizDTO, quiz_id);
+        return quizService.update(updateQuizDTO);
     }
 
     @PostMapping("/publish/{quiz_id}")

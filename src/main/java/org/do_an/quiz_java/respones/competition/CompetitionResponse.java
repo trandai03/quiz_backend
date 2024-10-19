@@ -15,7 +15,7 @@ public class CompetitionResponse {
     private String name;
     private Integer id;
     private String code;
-    private Quiz quiz;
+    private Integer quizId;
     private String organizedBy;
     private String startTime;
     private String title;
@@ -27,7 +27,7 @@ public class CompetitionResponse {
                 .time(competition.getTime())
                 .name(competition.getName())
                 .code(competition.getCode())
-                .quiz(competition.getQuiz())
+                .quizId(competition.getQuiz().getId())
                 .organizedBy(competition.getOrganizedBy().getUsername())
                 .startTime(competition.getStartTime().toString())
                 .title(competition.getQuiz().getTitle())

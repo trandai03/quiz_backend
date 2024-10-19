@@ -18,6 +18,7 @@ public class ResultResponse {
     LocalDateTime completedAt;
     Integer submittedTime;
     String username;
+    Integer competitionId;
     List<QuestionResultResponse> resultQuestionResponses;
     public static ResultResponse fromEntity(Result result) {
         return ResultResponse.builder()
@@ -28,6 +29,7 @@ public class ResultResponse {
                 .submittedTime(result.getSubmittedTime())
                 .resultQuestionResponses(QuestionResultResponse.fromEntityList(result.getQuestionResults()))
                 .username(result.getUser().getUsername())
+                .competitionId(result.getCompetition() != null ? result.getCompetition().getId() : null)
                 .build();
     }
 }

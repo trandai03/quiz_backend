@@ -17,6 +17,7 @@ public class ResultDTO {
     Integer score;
     //LocalDateTime completedAt;
     Integer submittedTime;
+    Integer competitionId = null;
 
 
 }
