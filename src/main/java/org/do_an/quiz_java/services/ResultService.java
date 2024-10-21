@@ -51,8 +51,8 @@ public class ResultService {
 
         // Duyệt qua từng câu hỏi trong bài quiz
         for (int i = 0; i < totalQuestions; i++) {
-            Question question = questions.get(i);
             QuestionResultDTO questionResultDTO = questionResultDTOS.get(i);
+            Question question = questionService.findById(questionResultDTO.getQuestionId());
 
             // Lấy danh sách đáp án đúng cho câu hỏi hiện tại
             List<Integer> correctChoiceIds = questionService.getCorrectAnswerChoices(question.getId());

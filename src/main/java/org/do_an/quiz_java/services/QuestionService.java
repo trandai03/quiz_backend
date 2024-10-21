@@ -67,4 +67,8 @@ public class QuestionService {
                 .collect(Collectors.toList());
     }
 
+    public Question findById(Integer id) {
+        return questionRepository.findById(id).get();
+    }
+
 }
