@@ -7,13 +7,13 @@ import lombok.*;
 /**
  * DTO for {@link org.do_an.quiz_java.model.User}
  */
-@Value
+
 @Data
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class UserDTO {
     @NotBlank(message = "Username is required")
     String username;
@@ -22,4 +22,6 @@ public class UserDTO {
 
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email")
     String email;
+
+
 }

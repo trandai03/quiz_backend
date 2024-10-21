@@ -7,6 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.util.Random;
+
 @Builder
 @Getter
 @Setter
@@ -46,5 +48,19 @@ public class Competition {
     @Size(max = 6)
     @Column(name = "code", length = 6)
     private String code;
+
+    @PrePersist
+    public void generateCompetitionCode() {
+        if (this.code == null || this.code.isEmpty()) {
+            this.code = generateRandomCode();
+        }
+    }
+
+    // Sinh mã 6 chữ số
+    private String generateRandomCode() {
+        Random random = new Random();
+        int randomNumber = random.nextInt(999999);
+        return String.format("%06d", randomNumber);  // Tạo chuỗi 6 chữ số, thêm số 0 nếu cần
+    }
 
 }

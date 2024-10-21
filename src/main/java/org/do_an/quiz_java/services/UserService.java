@@ -1,5 +1,6 @@
 package org.do_an.quiz_java.services;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.UpdatePasswordDTO;
@@ -20,6 +21,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +33,11 @@ public class UserService  {
     private final TokenRepository tokenRepository;
 //    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
-
+    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
+    //private final RestTemplate restTemplate;
 //    @Transactional(readOnly = true)
 //    public Page<UserResponse> getAllUsers(Pageable pageable) {
 //        Page<User> users = userRepository.findAll(pageable);
@@ -50,13 +55,6 @@ public class UserService  {
         if (userRepository.existsByUsername(username)) {
             throw new DataIntegrityViolationException("Username already exists");
         }
-
-        // check info user is already exist
-//        if (userRepository.existsByEmailOrPhoneNumber(userDTO.getEmail(), userDTO.getPhoneNumber())) {
-//            throw new DataIntegrityViolationException("Phone number or Email already exists");
-//        }
-
-        // Get role by ID
 
 
         // Create User entity
@@ -169,4 +167,42 @@ public class UserService  {
 
 
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    private void sendEmail(User user, String subject, String template, String urlAttribute, String urlPath) throws MessagingException {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("username", user.getUsername());
+        attributes.put(urlAttribute, "http://" + "localhost:8080" + urlPath);
+        emailService.sendMessageHtml(user.getEmail(), subject, template, attributes);
+    }
+
+//    public String registerUser(User user, String captcha, String password2) {
+//        String url = String.format(captchaUrl, secret, captcha);
+//        restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponse.class);
+//
+//        if (user.getPassword() != null && !user.getPassword().equals(password2)) {
+//            throw new PasswordException(PASSWORDS_DO_NOT_MATCH);
+//        }
+//
+//        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+//            throw new EmailException(EMAIL_IN_USE);
+//        }
+//        user.setActive(false);
+//        user.setRoles(Collections.singleton(Role.USER));
+//        user.setProvider(AuthProvider.LOCAL);
+//        user.setActivationCode(UUID.randomUUID().toString());
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        userRepository.save(user);
+//
+//        sendEmail(user, "Activation code", "registration-template", "registrationUrl", "/activate/" + user.getActivationCode());
+//        return "User successfully registered.";
+//    }
+
 }

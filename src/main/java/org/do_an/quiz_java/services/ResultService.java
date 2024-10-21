@@ -6,6 +6,7 @@ import org.do_an.quiz_java.dto.QuestionResultDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.CompetitionRepository;
+import org.do_an.quiz_java.repositories.QuestionChoiceRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.repositories.ResultRepository;
 import org.do_an.quiz_java.respones.result.ResultResponse;
@@ -20,6 +21,7 @@ import java.util.List;
 @Slf4j
 
 public class ResultService {
+    private final QuestionChoiceRepository questionChoiceRepository;
     private final CompetitionRepository competitionRepository;
     private  final ResultRepository resultRepository;
     private final QuizRepository quizRepository;
@@ -84,7 +86,7 @@ public class ResultService {
             for (Integer selectedChoiceId : selectedChoiceIds) {
                 SelectedChoice selectedChoice = SelectedChoice.builder()
                         .questionResult(questionResult)
-                        .choice(QuestionChoice.builder().id(selectedChoiceId).build()) // Thiết lập đáp án đã chọn
+                        .choice(questionChoiceRepository.findById(selectedChoiceId).get()) // Thiết lập đáp án đã chọn
                         .build();
                 selectedChoices.add(selectedChoice); // Thêm vào danh sách selectedChoices
             }

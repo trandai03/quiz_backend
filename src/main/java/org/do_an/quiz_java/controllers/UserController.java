@@ -20,8 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,6 +36,23 @@ public class UserController {
     private final TokenService tokenService;
     private final ModelMapper modelMapper;
 
+    @GetMapping("/oauth2")
+    public Map<String,Object> oauth2(@AuthenticationPrincipal OAuth2User principal) {
+        Map<String,Object> response = new HashMap<>();
+        if(principal != null) {
+            response.put("name", principal.getAttribute("name"));
+            response.put("email", principal.getAttribute("email"));
+            response.put("picture", principal.getAttribute("picture"));
+            response.put("principal", principal);
+        }else{
+            response.put("error", "No principal");
+        }
+        return response;
+    }
+    @GetMapping("/oauth/login/google")
+    public String getMessage() {
+        return "Hello, you are authenticated";
+    }
     @PostMapping("/login")
     public ResponseEntity<Response> login(
             @RequestBody @Valid UserLoginDTO userLoginDTO
@@ -104,4 +124,11 @@ public class UserController {
             return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));
         }
     }
+
+//    @GetMapping("/activate/{code}")
+//    public ResponseEntity<String> activateEmailCode(@PathVariable String code) {
+//        return ResponseEntity.ok(userService.activateUser(code));
+//    }
+
+
 }
