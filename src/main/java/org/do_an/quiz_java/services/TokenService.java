@@ -29,4 +29,17 @@ public class TokenService {
         newToken.setExpirationDate(LocalDateTime.now().plusSeconds(expiration));
         return tokenRepository.save(newToken);
     }
+
+    public Token getToken(String token){
+        return tokenRepository.findByToken(token);
+    }
+
+    public boolean isValidToken(String token){
+        Token userToken = tokenRepository.findByToken(token);
+        if(userToken.getExpirationDate().isAfter(LocalDateTime.now())){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

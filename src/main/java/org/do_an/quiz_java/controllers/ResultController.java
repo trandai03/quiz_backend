@@ -27,5 +27,9 @@ public class ResultController {
     public List<ResultResponse> getAllResultByCompetition( @PathVariable Integer competitionId){
         return resultService.getResultByCompetition(competitionId);
     }
-    
+
+    @GetMapping("/{resultId}")
+    public ResultResponse getResultById(@PathVariable Integer resultId){
+        return resultService.getResultById(resultId);
+    }
 }

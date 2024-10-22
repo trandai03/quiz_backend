@@ -3,6 +3,7 @@ package org.do_an.quiz_java.services;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,14 +18,15 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class EmailService {
-
-    private final JavaMailSender mailSender;
+    
+    private final JavaMailSender mailSender ;
     private final SpringTemplateEngine thymeleafTemplateEngine;
 
     // Add this field to store the email username
-    //@Value("${spring.mail.username}")
-    private final String username="${spring.mail.username}";
+//    @Value("${spring.mail.username}")
+//    private String username;
 
 
     public void sendMessageHtml(String to, String subject, String template, Map<String, Object> attributes) throws MessagingException {
@@ -36,7 +38,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         // Use the injected username as the sender's email address
-        helper.setFrom(username);
+        //helper.setFrom(username);
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
@@ -55,9 +57,19 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        message.setFrom(username); // Set the sender's email address
+        //message.setFrom(username); // Set the sender's email address
 
         mailSender.send(message);
     }
 
+    public void sendVerificationEmail(String to, String subject, String text) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(text, true);
+//        helper.setFrom(username); // Set the sender's email address
+//        log.info("Sending email from: " + username);
+        mailSender.send(message);
+    }
 }

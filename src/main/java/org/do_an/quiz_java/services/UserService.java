@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.UpdatePasswordDTO;
 import org.do_an.quiz_java.dto.UpdateUserDTO;
 import org.do_an.quiz_java.dto.UserDTO;
+import org.do_an.quiz_java.dto.VerifyUserDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.TokenRepository;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -37,37 +39,96 @@ public class UserService  {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
-    //private final RestTemplate restTemplate;
-//    @Transactional(readOnly = true)
-//    public Page<UserResponse> getAllUsers(Pageable pageable) {
-//        Page<User> users = userRepository.findAll(pageable);
-//
-//        Page<UserResponse> result = users.map(user -> modelMapper.map(user, UserResponse.class));
-//        return result;
-//    }
 
 
     @Transactional
     public User createUser(UserDTO userDTO) throws Exception {
-        String username = userDTO.getUsername();
+
 
         // Check if username already exists
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new DataIntegrityViolationException("Username already exists");
+        }
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new DataIntegrityViolationException("Email already exists");
         }
 
 
         // Create User entity
         User newUser = User.builder()
                 .email(userDTO.getEmail())
-                .username(username)
+                .username(userDTO.getUsername())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
+                .verificationCode(generateVerificationCode())
+                .enabled(false)
+                .verificationExpiration(LocalDateTime.now().plusMinutes(15))
                 .build();
+        //emailService.sendEmail(newUser.getEmail(),"Verification code" , "123");
+        sendVerificationEmail(newUser);
 
         // Save User entity to generate ID
         newUser = userRepository.save(newUser);
 
         return userRepository.save(newUser);
+    }
+
+    public void verifyUser(VerifyUserDTO verifyUserDTO) throws Exception {
+        User user = userRepository.findByEmail(verifyUserDTO.getEmail())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        if (user.getVerificationCode().equals(verifyUserDTO.getVerificationCode())
+                && user.getVerificationExpiration().isAfter(LocalDateTime.now())) {
+            user.setEnabled(true);
+            user.setVerificationCode(null);
+            user.setVerificationExpiration(null);
+            userRepository.save(user);
+        } else {
+            throw new DataNotFoundException("Invalid verification code");
+        }
+    }
+
+    public void resendVerificationCode(String email) throws Exception {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new DataNotFoundException("User findByEmail not found" + email));
+        if(user.isEnabled()) {
+            throw new DataNotFoundException("User already verified " + user.isEnabled());
+        }
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationExpiration(LocalDateTime.now().plusMinutes(15));
+        userRepository.save(user);
+        sendVerificationEmail(user);
+    }
+
+    public void sendVerificationEmail(User user) throws MessagingException {
+        String subject = "Verification code";
+        String verificationCode = user.getVerificationCode();
+        String htmlMessage = "<html>"
+                + "<body style=\"font-family: Arial, sans-serif;\">"
+                + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
+                + "<h2 style=\"color: #333;\">Welcome to our app!</h2>"
+                + "<p style=\"font-size: 16px;\">Please enter the verification code below to continue:</p>"
+                + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
+                + "<h3 style=\"color: #333;\">Verification Code:</h3>"
+                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + verificationCode + "</p>"
+                + "</div>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+
+        try {
+            user.setVerificationCode(verificationCode);
+            user.setVerificationExpiration(LocalDateTime.now().plusMinutes(15));
+            userRepository.save(user);
+            emailService.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
+        } catch (MessagingException e) {
+            // Handle email sending exception
+            e.printStackTrace();
+        }
+    }
+    private String generateVerificationCode() {
+
+        Random random = new Random();
+        int code = random.nextInt(900000) + 100000;
+        return String.valueOf(code);
     }
     @Transactional
     public String login(String username, String password) throws Exception {

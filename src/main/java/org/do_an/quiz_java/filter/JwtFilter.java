@@ -107,8 +107,10 @@ public class JwtFilter extends OncePerRequestFilter {
 //                Pair.of(String.format("%s/users/**", apiPrefix), "PUT"),
                 Pair.of(String.format("%s/users/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/create", apiPrefix), "POST"),
-                Pair.of("/login", "GET"),
-                Pair.of("/login/oauth2/code/google", "GET"),
+                Pair.of(String.format("%s/users/verify", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/resend-verification/**", apiPrefix), "POST"),
+
+                Pair.of(String.format("%s/tokens/**", apiPrefix), "GET"),
 
 
 

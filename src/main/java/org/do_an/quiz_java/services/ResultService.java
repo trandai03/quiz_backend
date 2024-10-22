@@ -68,13 +68,7 @@ public class ResultService {
             if (isCorrect) {
                 totalCorrect++;
             }
-//
-//            for(Integer selectedChoiceId : selectedChoiceIds){
-//                SelectedChoice selectedChoice = SelectedChoice.builder()
-//                        .choice(QuestionChoice.builder().id(selectedChoiceId).build())
-//                        .build();
-//                selectedChoices.add(selectedChoice);
-//            }
+
             // Tạo đối tượng QuestionResult để lưu kết quả câu hỏi
             QuestionResult questionResult = QuestionResult.builder()
                     .question(question)
@@ -93,6 +87,7 @@ public class ResultService {
             questionResult.setSelectedChoices(selectedChoices); // Lưu danh sách selectedChoices vào questionResult
             // Thêm kết quả câu hỏi vào danh sách kết quả chung
             questionResults.add(questionResult);
+            //questionResultService.save(questionResult);
         }
         Result result = Result.builder()
                 .quiz(quiz)
@@ -101,6 +96,10 @@ public class ResultService {
                 .questionResults(questionResults)
                 .submittedTime(resultDTO.getSubmittedTime())
                 .build();
+        for(QuestionResult questionResult : questionResults){
+            questionResult.setResult(result);
+        }
+        questionResultService.saveAll(questionResults);
         // Tạo đối tượng Result để lưu toàn bộ kết quả quiz
         if(resultDTO.getCompetitionId() != null){
             Competition competition = competitionRepository.findById(resultDTO.getCompetitionId()).get();
@@ -126,5 +125,10 @@ public class ResultService {
             resultResponses.add(ResultResponse.fromEntity(result));
         }
         return resultResponses;
+    }
+
+    public ResultResponse getResultById(Integer resultId) {
+        Result result = resultRepository.findById(resultId).get();
+        return ResultResponse.fromEntity(result);
     }
 }

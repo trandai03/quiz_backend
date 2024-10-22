@@ -40,6 +40,16 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<Token> tokens = new LinkedHashSet<>();
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name="verification_expiration")
+    private LocalDateTime verificationExpiration;
+
+    @Column(name = "enabled")
+    private boolean enabled = false;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -69,6 +79,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return this.enabled;
     }
+//    public boolean isEnabled() {
+//        return UserDetails.super.isEnabled();
+//    }
+
+
 }

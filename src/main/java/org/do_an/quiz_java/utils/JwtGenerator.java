@@ -33,13 +33,11 @@ public class JwtGenerator {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        String token = JWT.create()
+        return JWT.create()
                 .withSubject(user.getUsername())
                 .withClaim("roles", roles)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 864000000))
                 .sign(Algorithm.HMAC256(secretKey));
-
-        return token;
     }
 
     public String extractUsername(String token) {

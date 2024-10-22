@@ -3,10 +3,7 @@ package org.do_an.quiz_java.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.do_an.quiz_java.dto.UpdatePasswordDTO;
-import org.do_an.quiz_java.dto.UpdateUserDTO;
-import org.do_an.quiz_java.dto.UserDTO;
-import org.do_an.quiz_java.dto.UserLoginDTO;
+import org.do_an.quiz_java.dto.*;
 import org.do_an.quiz_java.model.Token;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.respones.Response;
@@ -36,23 +33,6 @@ public class UserController {
     private final TokenService tokenService;
     private final ModelMapper modelMapper;
 
-    @GetMapping("/oauth2")
-    public Map<String,Object> oauth2(@AuthenticationPrincipal OAuth2User principal) {
-        Map<String,Object> response = new HashMap<>();
-        if(principal != null) {
-            response.put("name", principal.getAttribute("name"));
-            response.put("email", principal.getAttribute("email"));
-            response.put("picture", principal.getAttribute("picture"));
-            response.put("principal", principal);
-        }else{
-            response.put("error", "No principal");
-        }
-        return response;
-    }
-    @GetMapping("/oauth/login/google")
-    public String getMessage() {
-        return "Hello, you are authenticated";
-    }
     @PostMapping("/login")
     public ResponseEntity<Response> login(
             @RequestBody @Valid UserLoginDTO userLoginDTO
@@ -88,6 +68,26 @@ public class UserController {
         }
     }
 
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody VerifyUserDTO verifyUserDTO) {
+        try {
+            userService.verifyUser(verifyUserDTO);
+            return ResponseEntity.ok("User verified successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));
+        }
+
+    }
+
+    @PostMapping("/resend-verification/{email}")
+    public ResponseEntity<?> resendVerification(@PathVariable String email) {
+        try {
+            userService.resendVerificationCode(email);
+            return ResponseEntity.ok("Verification email sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));
+        }
+    }
     @PutMapping("/update")
     public ResponseEntity<Response> update(
 //            @PathVariable Integer userId,
