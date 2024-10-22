@@ -33,3 +33,5 @@ build/
 .vscode/
 D:\Code\Java\quiz_backend\src\main\resources\.env
 .src/main/resources/.env
+/.env
+*.env
