@@ -14,6 +14,7 @@ import java.util.List;
 public class ResultResponse {
     Integer id;
     Integer quizId;
+    String quizTitle;
     Integer score;
     LocalDateTime completedAt;
     Integer submittedTime;
@@ -24,6 +25,7 @@ public class ResultResponse {
         return ResultResponse.builder()
                 .id(result.getId())
                 .quizId(result.getQuiz().getId())
+                .quizTitle(result.getQuiz().getTitle())
                 .score(result.getScore())
                 .completedAt(result.getCompletedAt())
                 .submittedTime(result.getSubmittedTime())
