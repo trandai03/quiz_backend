@@ -60,7 +60,7 @@ public class UserService  {
                 .username(userDTO.getUsername())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .verificationCode(generateVerificationCode())
-                .enabled(false)
+                .active(false)
                 .verificationExpiration(LocalDateTime.now().plusMinutes(15))
                 .build();
         //emailService.sendEmail(newUser.getEmail(),"Verification code" , "123");
@@ -77,7 +77,7 @@ public class UserService  {
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
         if (user.getVerificationCode().equals(verifyUserDTO.getVerificationCode())
                 && user.getVerificationExpiration().isAfter(LocalDateTime.now())) {
-            user.setEnabled(true);
+            user.setActive(true);
             user.setVerificationCode(null);
             user.setVerificationExpiration(null);
             userRepository.save(user);
@@ -89,8 +89,8 @@ public class UserService  {
     public void resendVerificationCode(String email) throws Exception {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new DataNotFoundException("User findByEmail not found" + email));
-        if(user.isEnabled()) {
-            throw new DataNotFoundException("User already verified " + user.isEnabled());
+        if(user.isActive()) {
+            throw new DataNotFoundException("User already verified " );
         }
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationExpiration(LocalDateTime.now().plusMinutes(15));

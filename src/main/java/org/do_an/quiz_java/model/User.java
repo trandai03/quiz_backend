@@ -47,8 +47,9 @@ public class User implements UserDetails {
     @Column(name="verification_expiration")
     private LocalDateTime verificationExpiration;
 
-    @Column(name = "enabled")
-    private boolean enabled;
+    @Column(name = "active")
+    private boolean active;
+
 
     @PrePersist
     protected void onCreate() {
@@ -79,11 +80,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        return UserDetails.super.isEnabled();
     }
-//    public boolean isEnabled() {
-//        return UserDetails.super.isEnabled();
-//    }
-
-
 }
