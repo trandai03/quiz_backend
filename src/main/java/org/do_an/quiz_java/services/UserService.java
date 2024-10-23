@@ -89,7 +89,7 @@ public class UserService  {
     public void resendVerificationCode(String email) throws Exception {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new DataNotFoundException("User findByEmail not found" + email));
-        if(user.isActive()) {
+        if(user.getActive()) {
             throw new DataNotFoundException("User already verified " );
         }
         user.setVerificationCode(generateVerificationCode());
