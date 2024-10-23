@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,9 @@ public class JwtGenerator {
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withClaim("roles", roles)
+//                .withExpiresAt(new Date(System.currentTimeMillis() + 864000000))
                 .withExpiresAt(new Date(System.currentTimeMillis() + 864000000))
+
                 .sign(Algorithm.HMAC256(secretKey));
     }
 

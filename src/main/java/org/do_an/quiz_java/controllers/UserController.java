@@ -125,10 +125,7 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/activate/{code}")
-//    public ResponseEntity<String> activateEmailCode(@PathVariable String code) {
-//        return ResponseEntity.ok(userService.activateUser(code));
-//    }
+
 
 
 }

@@ -21,7 +21,7 @@ public class TokenService {
             tokenRepository.delete(userToken);
         }
 
-        long expiration = 86400;
+        long expiration = 864000;
 
         Token newToken = new Token();
         newToken.setUser(user);

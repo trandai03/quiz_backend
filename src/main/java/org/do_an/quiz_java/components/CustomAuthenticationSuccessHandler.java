@@ -55,22 +55,15 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // Build redirect URI with token parameter
         String uri = UriComponentsBuilder.fromUriString("http://localhost:8080/home")
+
                 .queryParam("token", token)
                 //.queryParam("username", user.getUsername())
                 .queryParam("email", user.getEmail())
                 .build().toUriString();
-//        LoginResponse loginResponse = LoginResponse.builder()
-//                .username(user.getUsername())
-//                .email(user.getEmail())
-//                .token(token)
-//                .build();
         // Set the response type to JSON and character encoding to UTF-8
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-//
-//        // Write LoginResponse as JSON to the response body
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.writeValue(response.getWriter(), loginResponse);
+
         // Perform the redirect
         getRedirectStrategy().sendRedirect(request, response, uri);
 

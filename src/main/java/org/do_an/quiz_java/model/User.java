@@ -48,7 +48,7 @@ public class User implements UserDetails {
     private LocalDateTime verificationExpiration;
 
     @Column(name = "enabled")
-    private boolean enabled = false;
+    private boolean enabled;
 
     @PrePersist
     protected void onCreate() {
