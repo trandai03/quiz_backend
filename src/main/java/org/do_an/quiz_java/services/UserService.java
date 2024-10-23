@@ -221,11 +221,8 @@ public class UserService  {
         if (isAdmin) {
             throw new IllegalStateException("Cannot delete admin account");
         }
-
-
         userRepository.delete(user);
         return user;
-
 
     }
 
@@ -244,26 +241,37 @@ public class UserService  {
         emailService.sendMessageHtml(user.getEmail(), subject, template, attributes);
     }
 
-//    public String registerUser(User user, String captcha, String password2) {
-//        String url = String.format(captchaUrl, secret, captcha);
-//        restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponse.class);
-//
-//        if (user.getPassword() != null && !user.getPassword().equals(password2)) {
-//            throw new PasswordException(PASSWORDS_DO_NOT_MATCH);
-//        }
-//
-//        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-//            throw new EmailException(EMAIL_IN_USE);
-//        }
-//        user.setActive(false);
-//        user.setRoles(Collections.singleton(Role.USER));
-//        user.setProvider(AuthProvider.LOCAL);
-//        user.setActivationCode(UUID.randomUUID().toString());
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        userRepository.save(user);
-//
-//        sendEmail(user, "Activation code", "registration-template", "registrationUrl", "/activate/" + user.getActivationCode());
-//        return "User successfully registered.";
-//    }
+
+    public void forgotPassword(String email) throws Exception {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        sendForgotPasswordEmail(email, newPassword);
+    }
+
+    public void sendForgotPasswordEmail(String email ,String newPassword) throws MessagingException {
+        String subject = "Forgot password";
+        String htmlMessage = "<html>"
+                + "<body style=\"font-family: Arial, sans-serif;\">"
+                + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
+                + "<h2 style=\"color: #333;\">Forgot password?</h2>"
+                + "<p style=\"font-size: 16px;\">Your new password is below:</p>"
+                + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
+                + "<h3 style=\"color: #333;\">New Password:</h3>"
+                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + newPassword + "</p>"
+                + "</div>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+
+        try {
+            emailService.sendVerificationEmail(email, subject, htmlMessage);
+        } catch (MessagingException e) {
+            // Handle email sending exception
+            e.printStackTrace();
+        }
+    }
 
 }

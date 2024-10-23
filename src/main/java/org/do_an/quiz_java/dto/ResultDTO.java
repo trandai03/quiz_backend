@@ -14,7 +14,8 @@ import java.util.List;
 public class ResultDTO {
     Integer quizId;
     List<QuestionResultDTO> questionResultDTOS;
-    Integer score;
+    Float score;
+    Integer totalCorrect;
     //LocalDateTime completedAt;
     Integer submittedTime;
     Integer competitionId = null;

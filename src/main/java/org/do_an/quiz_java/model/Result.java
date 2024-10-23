@@ -35,8 +35,11 @@ public class Result {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    @Column(name = "total_correct")
+    private Integer totalCorrect;
+
     @Column(name = "score")
-    private Integer score;
+    private Float score;
 
     @Column(name = "submitted_time")
     private Integer submittedTime;

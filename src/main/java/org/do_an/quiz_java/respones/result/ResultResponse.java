@@ -15,7 +15,8 @@ public class ResultResponse {
     Integer id;
     Integer quizId;
     String quizTitle;
-    Integer score;
+    Float score;
+    Integer totalCorrect;
     LocalDateTime completedAt;
     Integer submittedTime;
     String username;
@@ -27,6 +28,7 @@ public class ResultResponse {
                 .quizId(result.getQuiz().getId())
                 .quizTitle(result.getQuiz().getTitle())
                 .score(result.getScore())
+                .totalCorrect(result.getTotalCorrect())
                 .completedAt(result.getCompletedAt())
                 .submittedTime(result.getSubmittedTime())
                 .resultQuestionResponses(QuestionResultResponse.fromEntityList(result.getQuestionResults()))

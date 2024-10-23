@@ -125,6 +125,15 @@ public class UserController {
         }
     }
 
+    @PostMapping("/forgot-password/{email}")
+    public ResponseEntity<?> forgotPassword(@PathVariable String email) {
+        try {
+            userService.forgotPassword(email);
+            return ResponseEntity.ok("Password reset email sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));
+        }
+    }
 
 
 

@@ -89,10 +89,17 @@ public class ResultService {
             questionResults.add(questionResult);
             //questionResultService.save(questionResult);
         }
+        float score = (float) totalCorrect / totalQuestions * 10;
+        float roundedScore = Math.round(score * 100) / 100.0f;
+        if (totalCorrect != resultDTO.getTotalCorrect() || roundedScore != resultDTO.getScore()) {
+            log.warn("Calculated score does not match expected score: expected=" + resultDTO.getTotalCorrect() + ", actual=" + totalCorrect + ", expected=" + resultDTO.getScore() + ", actual=" + roundedScore);
+            throw new RuntimeException("Calculated score does not match expected score");
+        }
         Result result = Result.builder()
                 .quiz(quiz)
                 .user(user)
-                .score(totalCorrect)
+                .totalCorrect(totalCorrect)
+                .score(roundedScore)
                 .questionResults(questionResults)
                 .submittedTime(resultDTO.getSubmittedTime())
                 .build();
@@ -100,6 +107,9 @@ public class ResultService {
             questionResult.setResult(result);
         }
         questionResultService.saveAll(questionResults);
+        // Kiểm tra và log nếu điểm tính toán khác với điểm trong DTO
+
+
         // Tạo đối tượng Result để lưu toàn bộ kết quả quiz
         if(resultDTO.getCompetitionId() != null){
             Competition competition = competitionRepository.findById(resultDTO.getCompetitionId()).get();
@@ -108,11 +118,6 @@ public class ResultService {
 
         // Lưu kết quả vào cơ sở dữ liệu
         resultRepository.save(result);
-
-        // Kiểm tra và log nếu điểm tính toán khác với điểm trong DTO
-        if (totalCorrect != resultDTO.getScore()) {
-            log.warn("Calculated score does not match expected score: expected=" + resultDTO.getScore() + ", actual=" + totalCorrect);
-        }
 
         // Trả về kết quả của bài quiz
         return ResultResponse.fromEntity(result);
