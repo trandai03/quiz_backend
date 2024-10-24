@@ -11,6 +11,7 @@ import org.do_an.quiz_java.respones.user.LoginResponse;
 import org.do_an.quiz_java.services.TokenService;
 import org.do_an.quiz_java.utils.JwtGenerator;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -32,6 +33,9 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+
+    @Value("${hostname}")
+    private String hostname;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -58,7 +62,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String token = jwtGenerator.generateToken(user);
             tokenService.addToken(user, token);
             // Build redirect URI with token parameter
-            String uri = UriComponentsBuilder.fromUriString("http://localhost:8080/home")
+            String uri = UriComponentsBuilder.fromUriString( hostname +"/home")
                     .queryParam("token", token)
                     .build().toUriString();
 
