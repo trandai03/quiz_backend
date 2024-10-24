@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
+    private Integer id;
     private String username;
     private String email;
     private String token;

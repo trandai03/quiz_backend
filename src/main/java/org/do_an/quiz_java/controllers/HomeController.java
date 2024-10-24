@@ -3,6 +3,7 @@ package org.do_an.quiz_java.controllers;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.services.UserService;
 import org.do_an.quiz_java.utils.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Root", description = "Root for testing the API")
 @Hidden
+@Slf4j
 public class HomeController {
     private BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -41,8 +44,9 @@ public class HomeController {
                 """;
     }
     @GetMapping("/home")
-    public ResponseEntity<Object> home(){
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Object> home(@RequestParam String token) {
+        return ResponseEntity.ok().body(token);
+
     }
 }
     //@GetMapping("/")

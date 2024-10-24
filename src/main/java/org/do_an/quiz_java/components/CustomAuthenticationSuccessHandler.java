@@ -4,9 +4,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.do_an.quiz_java.model.Token;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.UserRepository;
 import org.do_an.quiz_java.respones.user.LoginResponse;
+import org.do_an.quiz_java.services.TokenService;
 import org.do_an.quiz_java.utils.JwtGenerator;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.security.core.Authentication;
@@ -29,43 +31,49 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     //private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final TokenService tokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = (String) oAuth2User.getAttributes().get("email");
-        String username = (String) oAuth2User.getAttributes().get("name");
+        try {
+            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+            String email = (String) oAuth2User.getAttributes().get("email");
+            String username = (String) oAuth2User.getAttributes().get("name");
 
-        // Generate a more secure password if necessary or handle differently
-        String randomPassword = UUID.randomUUID().toString();
-        String cryptoPassword = passwordEncoder.encode(randomPassword);
+            // Generate a more secure password if necessary or handle differently
+            String randomPassword = UUID.randomUUID().toString();
+            String cryptoPassword = passwordEncoder.encode(randomPassword);
 
-        // Fetch user or create a new one if not found
-        User user = userRepository.findByEmail(email).orElseGet(() -> {
-            User newUser = User.builder()
-                    .email(email)
-                    .username(username)
-                    .password(cryptoPassword)  // May not be needed for OAuth2
-                    .build();
-            return userRepository.save(newUser);
-        });
+            // Fetch user or create a new one if not found
+            User user = userRepository.findByEmail(email).orElseGet(() -> {
+                User newUser = User.builder()
+                        .email(email)
+                        .username(username)
+                        .password(cryptoPassword)  // May not be needed for OAuth2
+                        .build();
+                return userRepository.save(newUser);
+            });
 
-        // Generate JWT token for the user
-        String token = jwtGenerator.generateToken(user);
+            // Generate JWT token for the user
+            String token = jwtGenerator.generateToken(user);
+            tokenService.addToken(user, token);
+            // Build redirect URI with token parameter
+            String uri = UriComponentsBuilder.fromUriString("http://localhost:8080/home")
+                    .queryParam("token", token)
+                    .build().toUriString();
 
-        // Build redirect URI with token parameter
-        String uri = UriComponentsBuilder.fromUriString("http://localhost:8080/home")
+            // Set the response type to JSON and character encoding to UTF-8
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-                .queryParam("token", token)
-                //.queryParam("username", user.getUsername())
-                .queryParam("email", user.getEmail())
-                .build().toUriString();
-        // Set the response type to JSON and character encoding to UTF-8
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+            // Perform the redirect
+            getRedirectStrategy().sendRedirect(request, response, uri);
 
-        // Perform the redirect
-        getRedirectStrategy().sendRedirect(request, response, uri);
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Redirect to error page if anything goes wrong
+            response.sendRedirect("/login?error");
+        }
     }
+
 }

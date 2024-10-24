@@ -48,9 +48,9 @@ public class QuizService {
                 .createdBy(user).build();
 //        quizRepository.save(quiz);
 
-        questionService.save(quizDTO.getQuestions(),quiz);
+        quiz.setQuestions(questionService.save(quizDTO.getQuestions(),quiz));
         quiz = quizRepository.save(quiz);
-        return QuizResponse.fromEntity(quiz);
+        return QuizResponse.fromEntity(quizRepository.findByQuizId(quiz.getId()));
     }
     public QuizResponse updateQuizWithImage(MultipartFile file, Integer quizId) throws DataNotFoundException {
         Quiz quiz = findByQuizId(quizId);
@@ -152,11 +152,14 @@ public class QuizService {
         }
         if(updateQuizDTO.getQuestions() != null){
             existingQuiz.setTotalQuestions(updateQuizDTO.getQuestions().size());
+            existingQuiz.setQuestions(questionService.update(updateQuizDTO.getQuestions(),existingQuiz));
+//            questionService.update(updateQuizDTO.getQuestions(),existingQuiz);
+//
+//            existingQuiz.setQuestions(updateQuizDTO.getQuestions());
         }
         existingQuiz.setCategory(category);
 
         quizRepository.save(existingQuiz);
-        //questionService.update(updateQuizDTO.getQuestions(),existingQuiz);
         return QuizResponse.fromEntity(existingQuiz);
     }
 

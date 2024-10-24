@@ -84,8 +84,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private boolean isNonAuthRequest(HttpServletRequest request) {
         final List<Pair<String, String>> nonAuthRequests = List.of(
-
-
                 // Swagger
                 Pair.of("/swagger-ui/**", "GET"),
                 Pair.of("/v3/api-docs/**", "GET"),
@@ -112,7 +110,14 @@ public class JwtFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/forgot-password/**", apiPrefix), "POST"),
 
                 Pair.of(String.format("%s/tokens/**", apiPrefix), "GET"),
+                Pair.of("/home", "GET"),
+                Pair.of("/", "GET"),
 
+//                Pair.of(String.format("%s/login/oauth2/code/**", apiPrefix), "GET"),
+//                Pair.of(String.format("/login/oauth2/code/**", apiPrefix), "POST"),
+                Pair.of("/login", "GET"),
+                Pair.of("/login/oauth2/code/**", "GET"),
+                Pair.of("/login/oauth2/code/**", "POST"),
 
 
                 Pair.of(String.format("%s/oauth/**", apiPrefix), "GET"),

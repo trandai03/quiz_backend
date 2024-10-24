@@ -51,12 +51,13 @@ public class QuestionService {
         return question.getQuestionChoice().stream().anyMatch(choice -> choice.getId().equals(choiceId) && choice.getIsCorrect());
     }
 
-    public List<Question> update(List<QuestionDTO> questionDTOs, Quiz quiz) {
+    public List<Question> update(List<Question> questions, Quiz quiz) {
         List<Question> existingQuestions = questionRepository.findByQuiz(quiz);
-        List<Question> questions = questionDTOs.stream().map((element) -> modelMapper.map(element, Question.class)).collect(Collectors.toList());
+        List<Question> updateQuestions = questions.stream().map((element) -> modelMapper.map(element, Question.class)).collect(Collectors.toList());
 
-        for (Question question : questions) {
+        for (Question question : updateQuestions) {
             questionChoiceService.saveAll(question.getQuestionChoice(), question);
+            question.setQuiz(quiz);
         }
         return questionRepository.saveAll(questions);
     }
