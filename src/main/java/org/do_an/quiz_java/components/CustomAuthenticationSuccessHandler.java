@@ -53,7 +53,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 User newUser = User.builder()
                         .email(email)
                         .username(username)
-                        .password(cryptoPassword)  // May not be needed for OAuth2
+                        .password(cryptoPassword)
+                        .active(true)// May not be needed for OAuth2
                         .build();
                 return userRepository.save(newUser);
             });
