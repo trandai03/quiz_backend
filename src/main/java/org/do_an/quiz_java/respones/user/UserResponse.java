@@ -4,7 +4,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.model.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Getter
@@ -18,7 +20,7 @@ public class UserResponse {
     private int id;
     private String fullname;
     private String phoneNumber;
-    private LocalDateTime dateOfBirth;
+    private Date dateOfBirth;
     private String username;
     private String email;
     public static UserResponse fromUser(User user){

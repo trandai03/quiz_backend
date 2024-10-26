@@ -57,7 +57,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @Column(name="date_of_birth")
-    private LocalDateTime dateOfBirth;
+    private Date dateOfBirth;
 
     @PrePersist
     protected void onCreate() {

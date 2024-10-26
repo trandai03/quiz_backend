@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Setter
@@ -19,5 +20,5 @@ public class UpdateUserDTO {
     private String email;
     private String fullName;
     private String phoneNumber;
-    private LocalDateTime dateOfBirth;
+    private Date dateOfBirth;
 }
