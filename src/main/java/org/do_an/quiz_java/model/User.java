@@ -50,6 +50,14 @@ public class User implements UserDetails {
     @Column(name = "active")
     private Boolean active;
 
+    @Column(name = "fullname")
+    private String fullName;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name="date_of_birth")
+    private LocalDateTime dateOfBirth;
 
     @PrePersist
     protected void onCreate() {

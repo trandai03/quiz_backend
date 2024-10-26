@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.*;
 import org.do_an.quiz_java.model.Token;
 import org.do_an.quiz_java.model.User;
+import org.do_an.quiz_java.repositories.UserRepository;
 import org.do_an.quiz_java.respones.Response;
+import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.user.LoginResponse;
 import org.do_an.quiz_java.respones.user.UserResponse;
 import org.do_an.quiz_java.services.TokenService;
@@ -15,12 +17,14 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,6 +33,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
+    private final UserRepository userRepository;
     private final UserService userService;
     private final TokenService tokenService;
     private final ModelMapper modelMapper;
@@ -90,7 +95,6 @@ public class UserController {
     }
     @PutMapping("/update")
     public ResponseEntity<Response> update(
-//            @PathVariable Integer userId,
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UpdateUserDTO updateUserDTO
     ) {
@@ -104,7 +108,6 @@ public class UserController {
 
     @PutMapping("/change-password")
     public ResponseEntity<Response> changePassword(
-//            @PathVariable Integer userId,
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UpdatePasswordDTO updatePasswordDTO
     ) {
@@ -135,6 +138,24 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/me")
+    //@PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Response> getProfile(@AuthenticationPrincipal User user) {
+        try {
+            log.info("User: {}", user );
+            User userDetail = userRepository.findById(user.getId()).orElseThrow(() -> new Exception("User not found"));
+            return ResponseEntity.ok().body(new Response("success", "User detail", UserResponse.fromUser(userDetail)));
+        } catch (Exception e) {
+            log.error("Error fetching user details", e);
+            return ResponseEntity.badRequest().body(new Response("error", e.getMessage(), null));
+        }
+    }
 
+    //@PreAuthorize("isAuthenticated()")
+//    @GetMapping("/me")
+//    public UserResponse getProfile(@AuthenticationPrincipal User user) {
+//            log.info("User: {}", user);
+//        return UserResponse.fromUser(user);
+//    }
 
 }

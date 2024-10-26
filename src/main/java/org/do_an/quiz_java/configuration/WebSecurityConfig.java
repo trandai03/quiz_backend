@@ -5,6 +5,7 @@ import org.do_an.quiz_java.components.CustomAccessDeniedHandler;
 import org.do_an.quiz_java.components.CustomAuthenticationSuccessHandler;
 import org.do_an.quiz_java.filter.JwtFilter;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,6 +32,8 @@ public class WebSecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    @Value("${api.v1.prefix}")
+    String apiPrefix;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
@@ -39,7 +42,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
-                    request.anyRequest().permitAll();
+                    request// Yêu cầu xác thực với endpoint /me
+                            .anyRequest().permitAll();          // Cho phép các yêu cầu khác
                 })
                 .authenticationProvider(authenticationProvider)
                             .exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler))

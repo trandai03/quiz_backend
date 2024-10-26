@@ -99,6 +99,7 @@ public class QuizController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user")
     public List<QuizResponse> findQuizByUser(@AuthenticationPrincipal User user) {
+        log.info("User: {}", user);
         return quizService.findQuizByUser(user);
     }
     @GetMapping("category/{category_id}")

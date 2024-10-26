@@ -168,18 +168,21 @@ public class UserService  {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 
-//        // update user
-//        if (updatedUserDTO.getFullname() != null) {
-//            existingUser.setFullname(updatedUserDTO.getFullname());
-//        }
-//
-//        if (updatedUserDTO.getPhoneNumber() != null) {
-//            existingUser.setPhoneNumber(updatedUserDTO.getPhoneNumber());
-//        }
+        // update user
+        if (updatedUserDTO.getFullName() != null) {
+            existingUser.setFullName(updatedUserDTO.getFullName());
+        }
+
+        if (updatedUserDTO.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(updatedUserDTO.getPhoneNumber());
+        }
 //
 //        if (updatedUserDTO.getAddress() != null) {
 //            existingUser.setAddress(updatedUserDTO.getAddress());
 //        }
+        if (updatedUserDTO.getDateOfBirth() != null) {
+            existingUser.setDateOfBirth(updatedUserDTO.getDateOfBirth());
+        }
 
         if (updatedUserDTO.getEmail() != null) {
             existingUser.setEmail(updatedUserDTO.getEmail());
