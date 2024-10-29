@@ -42,7 +42,7 @@ public class Token {
 
     @JsonIgnore
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.model.Category;
 import org.do_an.quiz_java.repositories.CategoryRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class CategoryService {
             return null;
         }
     }
+    @Cacheable(value = "categories" , key = "#root.methodName")
     public List<Category> findAll(){
         return categoryRepository.findAll();
     }

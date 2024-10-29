@@ -1,5 +1,7 @@
 package org.do_an.quiz_java.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -14,12 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "question_result")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuestionResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "result_id")
@@ -30,7 +34,7 @@ public class QuestionResult {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "question_result_id")
     private List<SelectedChoice> selectedChoices;
 

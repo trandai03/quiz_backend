@@ -13,6 +13,9 @@ import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -106,6 +109,8 @@ public class QuizService {
                 .collect(Collectors.toList());
 
     }
+    @Cacheable(value = "quiz" , key = "#root.methodName")
+    @Transactional
     public List<QuizResponse> findAllQuiz() {
         return quizRepository.findAll().stream()
                 .map(QuizResponse::fromEntity)
@@ -125,6 +130,7 @@ public class QuizService {
         return uploadResult.get("url").toString();
 
     }
+    @CacheEvict(value = "quiz")
     public void delete(Integer id) {
         quizRepository.deleteById(id);
     }
@@ -132,6 +138,7 @@ public class QuizService {
         return resultService.submit(resultDTO,user);
     }
 
+    @CachePut(value = "quiz" , key = "#root.methodName")
     public QuizResponse update(UpdateQuizDTO updateQuizDTO) throws DataNotFoundException {
         Quiz existingQuiz = findByQuizId(updateQuizDTO.getId());
         Category category = categoryRepository.findById(updateQuizDTO.getCategoryId())
@@ -175,5 +182,10 @@ public class QuizService {
         quiz.setIsPublished(false);
         quizRepository.save(quiz);
         return QuizResponse.fromEntity(quiz);
+    }
+
+    @CacheEvict(value = "quiz", allEntries = true)
+    public void clearAllQuizCache() {
+        System.out.println("Clearing all books cache...");
     }
 }

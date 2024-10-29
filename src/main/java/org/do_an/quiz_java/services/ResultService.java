@@ -19,27 +19,27 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
+@Transactional
 public class ResultService {
     private final QuestionChoiceRepository questionChoiceRepository;
     private final CompetitionRepository competitionRepository;
     private  final ResultRepository resultRepository;
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
-    //private final CompetitionService competitionService;
     private final QuestionResultService questionResultService;
     public List<ResultResponse> getResultByUser(User user){
-        List <Result> results =resultRepository.findByUser(user);
+        List <Result> results =resultRepository.findByUserId(user.getId());
         List<ResultResponse> resultResponses = new ArrayList<>();
         for(Result result : results){
             resultResponses.add(ResultResponse.fromEntity(result));
+            log.info("Result: " + result);
         }
 
         // Return the list of ResultResponse
         return resultResponses;
 
     }
-    @Transactional
+
     public ResultResponse submit(ResultDTO resultDTO, User user) {
         // Lấy quiz từ cơ sở dữ liệu
         Quiz quiz = quizRepository.findByQuizId(resultDTO.getQuizId());
@@ -134,6 +134,16 @@ public class ResultService {
 
     public ResultResponse getResultById(Integer resultId) {
         Result result = resultRepository.findById(resultId).get();
+        log.info("Result: " + result);
         return ResultResponse.fromEntity(result);
+    }
+
+    public List<ResultResponse> getAllResult() {
+        List<Result> results = resultRepository.findAll();
+        List<ResultResponse> resultResponses = new ArrayList<>();
+        for (Result result : results) {
+            resultResponses.add(ResultResponse.fromEntity(result));
+        }
+        return resultResponses;
     }
 }

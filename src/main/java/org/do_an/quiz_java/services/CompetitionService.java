@@ -8,6 +8,7 @@ import org.do_an.quiz_java.model.Competition;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.CompetitionRepository;
 import org.do_an.quiz_java.respones.competition.CompetitionResponse;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class CompetitionService {
     private final CompetitionRepository competitionRepository;
 
     private final QuizService quizService;
+    @Cacheable(value = "competitions", key = "#root.methodName")
     public List<CompetitionResponse> findAll() {
         return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntity).collect(Collectors.toList());
     }

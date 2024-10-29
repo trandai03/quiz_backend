@@ -4,6 +4,7 @@ import lombok.*;
 import org.do_an.quiz_java.model.Question;
 import org.do_an.quiz_java.model.QuestionResult;
 import org.do_an.quiz_java.model.SelectedChoice;
+import org.do_an.quiz_java.respones.question.QuestionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +17,14 @@ import java.util.List;
 public class QuestionResultResponse {
     Integer id;
     Boolean isCorrect;
-    Question question;
-    List<SelectedChoice> selectedChoice;
+    QuestionResponse question;
+    List<SelectedChoiceResponse> selectedChoice;
     public static QuestionResultResponse fromEntity(QuestionResult questionResult){
         return QuestionResultResponse.builder()
                 .id(questionResult.getId())
                 .isCorrect(questionResult.getIsCorrect())
-                .question(questionResult.getQuestion())
-                .selectedChoice(questionResult.getSelectedChoices())
+                .question(QuestionResponse.fromEntity(questionResult.getQuestion()))
+                .selectedChoice(SelectedChoiceResponse.fromEntityList(questionResult.getSelectedChoices()))
                 .build();
     }
 

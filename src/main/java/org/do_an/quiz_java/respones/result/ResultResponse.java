@@ -1,5 +1,6 @@
 package org.do_an.quiz_java.respones.result;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.do_an.quiz_java.model.Result;
 
@@ -17,6 +18,7 @@ public class ResultResponse {
     String quizTitle;
     Float score;
     Integer totalCorrect;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime completedAt;
     Integer submittedTime;
     String username;

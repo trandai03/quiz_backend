@@ -13,6 +13,7 @@ import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.do_an.quiz_java.services.CloudinaryService;
 import org.do_an.quiz_java.services.QuestionService;
 import org.do_an.quiz_java.services.QuizService;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -162,5 +163,11 @@ public class QuizController {
             throw new DataNotFoundException("You are not the owner of this quiz");
         }
         return quizService.unPublishQuiz(quiz_id);
+    }
+
+    
+    @PostMapping("/clearAllQuizCache")
+    public void clearAllQuizCache() {
+        quizService.clearAllQuizCache();
     }
 }
