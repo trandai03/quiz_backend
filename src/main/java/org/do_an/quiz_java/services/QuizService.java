@@ -215,8 +215,5 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
-    public void createQuizForCompetition(User user, Integer competition_id, QuizDTO quizDTO) throws DataNotFoundException {
-        Quiz quiz = save(quizDTO, user);
-        competititonQuizService.save(quiz.getId(), competition_id);
-    }
+
 }

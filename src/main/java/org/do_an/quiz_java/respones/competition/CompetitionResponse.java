@@ -25,16 +25,13 @@ public class CompetitionResponse {
     private String startTime;
 
     public static CompetitionResponse fromEntity(Competition competition) {
-        for(CompetitionQuizResponse competitionQuizResponse : CompetitionQuizResponse.fromEntities(competition.getCompetitionQuizzes())) {
-            log.info("CompetitionQuizResponse: " + competitionQuizResponse);
-        }
         return CompetitionResponse.builder()
                 .id(competition.getId())
                 .description(competition.getDescription())
                 .time(competition.getTime())
                 .name(competition.getName())
                 .code(competition.getCode())
-                .competitionQuizResponses(CompetitionQuizResponse.fromEntities(competition.getCompetitionQuizzes()))
+                .competitionQuizResponses(competition.getCompetitionQuizzes() == null ? null : CompetitionQuizResponse.fromEntities(competition.getCompetitionQuizzes()))
                 .organizedBy(competition.getOrganizedBy().getUsername())
                 .startTime(competition.getStartTime().toString())
                 .build();

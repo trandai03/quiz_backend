@@ -10,6 +10,7 @@ import org.do_an.quiz_java.model.Category;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.CategoryRepository;
+import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.Response;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
@@ -34,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class QuizController {
+    private final QuizRepository quizRepository;
     private final QuizService quizService;
 
     private final QuestionService questionService;
@@ -180,11 +182,5 @@ public class QuizController {
         quizService.clearAllQuizCache();
     }
 
-    @PostMapping("/competition/create/{competition_id}")
-    public ResponseEntity createQuizForCompetition(@AuthenticationPrincipal User user,
-                                                   @PathVariable Integer competition_id,
-                                                   @RequestBody QuizDTO quizDTO) throws DataNotFoundException {
-        quizService.createQuizForCompetition(user, competition_id, quizDTO);
-        return ResponseEntity.ok("Create quiz for competition successfully");
-    }
+
 }
