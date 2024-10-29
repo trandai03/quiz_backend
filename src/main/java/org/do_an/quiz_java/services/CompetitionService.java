@@ -8,6 +8,8 @@ import org.do_an.quiz_java.model.Competition;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.CompetitionRepository;
 import org.do_an.quiz_java.respones.competition.CompetitionResponse;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,31 +36,35 @@ public class CompetitionService {
     public CompetitionResponse findByCode(String  code) {
         return CompetitionResponse.fromEntity(competitionRepository.findByCode(code));
     }
-
+    @CachePut(value = "competitions", key = "#root.methodName")
     public CompetitionResponse create(CompetitionDTO competitionDTO, User user) throws DataNotFoundException {
         Competition competition = Competition.builder()
                 .description(competitionDTO.getDescription())
                 .time(competitionDTO.getTime())
                 .name(competitionDTO.getName())
-                .quiz(quizService.findByQuizId(competitionDTO.getQuizId()))
                 .organizedBy(user)
                 .startTime(competitionDTO.getStartTime())
                 .build();
         competitionRepository.save(competition);
         return CompetitionResponse.fromEntity(competitionRepository.findById(competition.getId()).get());
     }
-
+    @CacheEvict(value = "competitions", allEntries = true)
     public void delete(Integer id) {
         competitionRepository.deleteById(id);
     }
 
+    @CachePut(value = "competitions", key = "#root.methodName")
     public CompetitionResponse update(Integer id, CompetitionDTO competitionDTO) throws DataNotFoundException {
         Competition competition = competitionRepository.findById(id).get();
         competition.setDescription(competitionDTO.getDescription());
         competition.setName(competitionDTO.getName());
-        competition.setQuiz(quizService.findByQuizId(competitionDTO.getQuizId()));
         competition.setStartTime(competitionDTO.getStartTime());
         competition.setTime(competitionDTO.getTime());
         return CompetitionResponse.fromEntity(competitionRepository.save(competition));
+    }
+
+    @CacheEvict(value = "competitions", allEntries = true)
+    public void clearAllQuizCache() {
+        System.out.println("Clearing all competition cache...");
     }
 }

@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,33 +41,43 @@ public class QuizService {
     private final ResultService resultService;
     private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
-    public QuizResponse save(QuizDTO quizDTO,  User user) {
-        Quiz quiz = Quiz.builder()
-                .title(quizDTO.getTitle())
-                .category(categoryService.find(quizDTO.getCategory_id()))
-                .createdBy(user)
-                .description(quizDTO.getDescription())
-                .isPublished(quizDTO.getIsPublished())
-                .totalQuestions(quizDTO.getQuestions().size())
-                .createdBy(user).build();
-//        quizRepository.save(quiz);
+    private final CompetitionQuizService competititonQuizService;
 
-        quiz.setQuestions(questionService.save(quizDTO.getQuestions(),quiz));
-        quiz = quizRepository.save(quiz);
-        return QuizResponse.fromEntity(quizRepository.findByQuizId(quiz.getId()));
+    @Caching(
+            put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
+            evict = @CacheEvict(value = "quiz", allEntries = true)
+    )
+    public Quiz save(QuizDTO quizDTO,  User user) {
+            Quiz quiz = Quiz.builder()
+                    .title(quizDTO.getTitle())
+                    .category(categoryService.find(quizDTO.getCategory_id()))
+                    .createdBy(user)
+                    .description(quizDTO.getDescription())
+                    .isPublished(quizDTO.getIsPublished())
+                    .totalQuestions(quizDTO.getQuestions().size())
+                    .createdBy(user).build();
+    //        quizRepository.save(quiz);
+
+            quiz.setQuestions(questionService.save(quizDTO.getQuestions(),quiz));
+            return quizRepository.save(quiz);
+
     }
-    public QuizResponse updateQuizWithImage(MultipartFile file, Integer quizId) throws DataNotFoundException {
-        Quiz quiz = findByQuizId(quizId);
-        try {
-            String imageUrl = storeFile(file);
-            log.error("Error while uploading image" + imageUrl);
-            quiz.setImage(imageUrl);
-        } catch (Exception e) {
-            log.error("Error while uploading image");
+    @Caching(
+            put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
+            evict = @CacheEvict(value = "quiz", allEntries = true)
+    )
+        public QuizResponse updateQuizWithImage(MultipartFile file, Integer quizId) throws DataNotFoundException {
+            Quiz quiz = findByQuizId(quizId);
+            try {
+                String imageUrl = storeFile(file);
+                log.error("Error while uploading image" + imageUrl);
+                quiz.setImage(imageUrl);
+            } catch (Exception e) {
+                log.error("Error while uploading image");
+            }
+            quizRepository.save(quiz);
+            return QuizResponse.fromEntity(quizRepository.findByQuizId(quizId));
         }
-        quizRepository.save(quiz);
-        return QuizResponse.fromEntity(quizRepository.findByQuizId(quizId));
-    }
 
     public Page<Quiz> findAll(Pageable pageable) {
         return quizRepository.findAll(pageable);
@@ -109,7 +120,7 @@ public class QuizService {
                 .collect(Collectors.toList());
 
     }
-    @Cacheable(value = "quiz" , key = "#root.methodName")
+    @Cacheable(value = "quiz" , key = "'findAllQuiz'")
     @Transactional
     public List<QuizResponse> findAllQuiz() {
         return quizRepository.findAll().stream()
@@ -138,7 +149,10 @@ public class QuizService {
         return resultService.submit(resultDTO,user);
     }
 
-    @CachePut(value = "quiz" , key = "#root.methodName")
+    @Caching(
+            put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
+            evict = @CacheEvict(value = "quiz", allEntries = true)
+    )
     public QuizResponse update(UpdateQuizDTO updateQuizDTO) throws DataNotFoundException {
         Quiz existingQuiz = findByQuizId(updateQuizDTO.getId());
         Category category = categoryRepository.findById(updateQuizDTO.getCategoryId())
@@ -169,14 +183,20 @@ public class QuizService {
         quizRepository.save(existingQuiz);
         return QuizResponse.fromEntity(existingQuiz);
     }
-
+    @Caching(
+            put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
+            evict = @CacheEvict(value = "quiz", allEntries = true)
+    )
     public QuizResponse publishQuiz(Integer quizId) throws DataNotFoundException {
         Quiz quiz = findByQuizId(quizId);
         quiz.setIsPublished(true);
         quizRepository.save(quiz);
         return QuizResponse.fromEntity(quiz);
     }
-
+    @Caching(
+            put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
+            evict = @CacheEvict(value = "quiz", allEntries = true)
+    )
     public QuizResponse unPublishQuiz(Integer quizId) throws DataNotFoundException {
         Quiz quiz = findByQuizId(quizId);
         quiz.setIsPublished(false);
@@ -186,6 +206,17 @@ public class QuizService {
 
     @CacheEvict(value = "quiz", allEntries = true)
     public void clearAllQuizCache() {
-        System.out.println("Clearing all books cache...");
+        System.out.println("Clearing all quiz cache...");
+    }
+
+    public List<QuizResponse> searchByCategory(String filter, Integer categoryId) {
+        return quizRepository.findByCategoryNameContaining(filter,categoryId).stream()
+                .map(QuizResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public void createQuizForCompetition(User user, Integer competition_id, QuizDTO quizDTO) throws DataNotFoundException {
+        Quiz quiz = save(quizDTO, user);
+        competititonQuizService.save(quiz.getId(), competition_id);
     }
 }

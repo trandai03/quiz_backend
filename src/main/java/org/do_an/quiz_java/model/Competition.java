@@ -7,6 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Builder
@@ -22,10 +24,10 @@ public class Competition {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JoinColumn(name = "quiz_id")
+//    private Quiz quiz;
 
     @Column(name = "time")
     private Integer time;
@@ -48,6 +50,9 @@ public class Competition {
     @Size(max = 6)
     @Column(name = "code", length = 6)
     private String code;
+
+    @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompetitionQuiz> competitionQuizzes = new ArrayList<>();
 
     @PrePersist
     public void generateCompetitionCode() {

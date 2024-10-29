@@ -18,5 +18,4 @@ public class CompetitionDTO  {
     String description;
     Instant startTime;
 
-    Integer quizId;
 }

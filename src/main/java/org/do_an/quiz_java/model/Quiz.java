@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -62,4 +63,8 @@ public class Quiz {
 
     @Column(name = "total_questions")
     private Integer totalQuestions;
+    
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompetitionQuiz> competitionQuizzes = new ArrayList<>();
+
 }

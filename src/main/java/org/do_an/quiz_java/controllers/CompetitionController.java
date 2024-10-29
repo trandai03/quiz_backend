@@ -48,4 +48,9 @@ public class CompetitionController {
     public CompetitionResponse update(@PathVariable Integer id, @RequestBody CompetitionDTO competitionDTO) throws DataNotFoundException {
         return competitionService.update(id, competitionDTO);
     }
+
+    @PostMapping("/clearAllQuizCache")
+    public void clearAllQuizCache() {
+        competitionService.clearAllQuizCache();
+    }
 }

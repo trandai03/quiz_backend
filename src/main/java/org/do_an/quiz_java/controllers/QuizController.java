@@ -6,8 +6,11 @@ import org.do_an.quiz_java.dto.QuizDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.dto.UpdateQuizDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
+import org.do_an.quiz_java.model.Category;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
+import org.do_an.quiz_java.repositories.CategoryRepository;
+import org.do_an.quiz_java.respones.Response;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.do_an.quiz_java.services.CloudinaryService;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +38,7 @@ public class QuizController {
 
     private final QuestionService questionService;
     private final CloudinaryService cloudinaryService;
-
+    private final CategoryRepository categoryRepository;
     @GetMapping("/getAll")
     public Page<Quiz> findAll(Pageable pageable,
                               @RequestParam(required = false, defaultValue = "false") Boolean published) {
@@ -56,7 +60,7 @@ public class QuizController {
 //        if(result.hasErrors()){
 //            System.out.print("Một hoặc nhiều trường truyền vào không hợp lệ!") ;
 //        }
-        return quizService.save(quizDTO, user);
+        return QuizResponse.fromEntity(quizService.save(quizDTO, user));
     }
     @PostMapping(value = "/image/{quiz_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -165,9 +169,22 @@ public class QuizController {
         return quizService.unPublishQuiz(quiz_id);
     }
 
-    
+    @GetMapping("/category/search")
+    public List<QuizResponse> searchByCategory(@RequestParam(required = true) String filter, @RequestParam Integer categoryId) throws DataNotFoundException {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new DataNotFoundException("Category not found"));
+        return quizService.searchByCategory(filter, category.getId());
+    }
     @PostMapping("/clearAllQuizCache")
     public void clearAllQuizCache() {
         quizService.clearAllQuizCache();
+    }
+
+    @PostMapping("/competition/create/{competition_id}")
+    public ResponseEntity createQuizForCompetition(@AuthenticationPrincipal User user,
+                                                   @PathVariable Integer competition_id,
+                                                   @RequestBody QuizDTO quizDTO) throws DataNotFoundException {
+        quizService.createQuizForCompetition(user, competition_id, quizDTO);
+        return ResponseEntity.ok("Create quiz for competition successfully");
     }
 }

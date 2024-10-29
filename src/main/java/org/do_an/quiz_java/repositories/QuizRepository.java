@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
 
     List<Quiz> findByCategory(Category category);
 
+    @Query("SELECT q FROM Quiz q WHERE q.category.id = :categoryId AND q.category.name LIKE %:name%")
+    List<Quiz> findByCategoryNameContaining(@Param("name") String name, @Param("categoryId") Integer categoryId);
 }

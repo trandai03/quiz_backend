@@ -42,4 +42,7 @@ public class QuizResponse {
             .image(quiz.getImage())
             .build();
     }
+    public static List<QuizResponse> fromEntities(List<Quiz> quizzes) {
+        return quizzes.stream().map(QuizResponse::fromEntity).toList();
+    }
 }
