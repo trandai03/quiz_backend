@@ -27,6 +27,12 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
 
     List<Quiz> findByCategory(Category category);
 
+
+
     @Query("SELECT q FROM Quiz q WHERE q.category.id = :categoryId AND q.category.name LIKE %:name%")
     List<Quiz> findByCategoryNameContaining(@Param("name") String name, @Param("categoryId") Integer categoryId);
+
+    @Override
+    @Query("SELECT q FROM Quiz q WHERE q.competitionQuizzes IS EMPTY AND q.isPublished = true")
+    List<Quiz> findAll();
 }

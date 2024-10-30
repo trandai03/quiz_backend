@@ -92,4 +92,8 @@ public class CompetitionService {
     public void addQuizForCompetition( Integer competition_id, Quiz quiz) throws DataNotFoundException {
         competititonQuizService.save(quiz, competition_id);
     }
+
+    public List<CompetitionResponse> findByUser(Integer user_id) {
+        return CompetitionResponse.fromEntities(competitionRepository.findByOrganizedBy_Id(user_id));
+    }
 }

@@ -7,6 +7,7 @@ import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @Setter
@@ -37,5 +38,8 @@ public class CompetitionResponse {
                 .build();
     }
 
+    public static List<CompetitionResponse> fromEntities(List<Competition> competitions) {
+        return competitions.stream().map(CompetitionResponse::fromEntity).collect(Collectors.toList());
+    }
 
 }
