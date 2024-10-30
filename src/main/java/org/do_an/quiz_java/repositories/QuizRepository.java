@@ -19,17 +19,18 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
 
     List<Quiz> findByCreatedBy(User user);
 
-    @Query("select q from Quiz q where q.title like %?1%")
+    @Query("select q from Quiz q where q.title like %?1% and q.isPublished = true and q.competitionQuizzes IS EMPTY and q.isPublished = true")
     Page<Quiz> searchByName(String name, Pageable pageable);
 
     @Query("select q from Quiz q where q.id = :id")
     Quiz findByQuizId(Integer id);
 
+    @Query("select q from Quiz q where q.category = :category and q.competitionQuizzes IS EMPTY and q.isPublished = true")
     List<Quiz> findByCategory(Category category);
 
 
 
-    @Query("SELECT q FROM Quiz q WHERE q.category.id = :categoryId AND q.category.name LIKE %:name%")
+    @Query("SELECT q FROM Quiz q WHERE q.category.id = :categoryId AND q.category.name LIKE %:name% and q.competitionQuizzes IS EMPTY and q.isPublished = true")
     List<Quiz> findByCategoryNameContaining(@Param("name") String name, @Param("categoryId") Integer categoryId);
 
     @Override

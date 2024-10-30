@@ -93,7 +93,7 @@ public class CompetitionService {
         competititonQuizService.save(quiz, competition_id);
     }
 
-    public List<CompetitionResponse> findByUser(Integer user_id) {
-        return CompetitionResponse.fromEntities(competitionRepository.findByOrganizedBy_Id(user_id));
+    public List<CompetitionResponse> findByUser(User user) {
+        return CompetitionResponse.fromEntities(competitionRepository.findByOrganizedBy(user));
     }
 }

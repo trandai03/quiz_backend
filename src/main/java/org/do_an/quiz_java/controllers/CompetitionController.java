@@ -94,6 +94,6 @@ public class CompetitionController {
 
     @GetMapping("/user")
     public List<CompetitionResponse> findByUser(@AuthenticationPrincipal User user) {
-        return competitionService.findByUser(user.getId());
+        return competitionService.findByUser(user);
     }
 }
