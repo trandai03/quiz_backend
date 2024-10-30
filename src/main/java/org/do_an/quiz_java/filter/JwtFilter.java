@@ -135,8 +135,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
                 // Category
-//                Pair.of(String.format("%s/categories", apiPrefix),"GET"),
+                Pair.of(String.format("%s/category/getAll", apiPrefix),"GET"),
 //                Pair.of(String.format("%s/categories/**", apiPrefix),"POST"),
+
+                // Quiz
+                Pair.of(String.format("%s/quizs/getAllQuiz", apiPrefix),"GET"),
 
                 //home
                 Pair.of("/home/**", "GET"),

@@ -1,5 +1,6 @@
 package org.do_an.quiz_java.services;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.TokenRepository;
 import org.do_an.quiz_java.repositories.UserRepository;
 import org.do_an.quiz_java.utils.JwtGenerator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,6 +35,15 @@ import java.util.*;
 @Slf4j
 @Transactional
 public class UserService  {
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String googleClientId;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String googleClientSecret;
+
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    private String googleRedirectUri;
+
     private final TokenRepository tokenRepository;
 //    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
@@ -275,6 +287,38 @@ public class UserService  {
             // Handle email sending exception
             e.printStackTrace();
         }
+    }
+
+    public String generateAuthUrl(String loginType) {
+        String url = "";
+        loginType = loginType.trim().toLowerCase(); // Normalize the login type
+
+//        if ("google".equals(loginType)) {
+//            GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(
+//                    googleClientId,
+//                    googleRedirectUri,
+//                    Arrays.asList("email", "profile", "openid"));
+//            url = urlBuilder.build();
+//        } else if ("facebook".equals(loginType)) {
+//            /*
+//            url = String.format("https://www.facebook.com/v3.2/dialog/oauth?client_id=%s&redirect_uri=%s&scope=email,public_profile&response_type=code",
+//                    facebookClientId, facebookRedirectUri);
+//             */
+//            url = UriComponentsBuilder
+//                    .fromUriString(facebookAuthUri)
+//                    .queryParam("client_id", facebookClientId)
+//                    .queryParam("redirect_uri", facebookRedirectUri)
+//                    .queryParam("scope", "email,public_profile")
+//                    .queryParam("response_type", "code")
+//                    .build()
+//                    .toUriString();
+//        }
+        GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(
+                googleClientId,
+                googleRedirectUri,
+                Arrays.asList("email", "profile", "openid"));
+        url = urlBuilder.build();
+        return url;
     }
 
 }
