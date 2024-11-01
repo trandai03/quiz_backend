@@ -160,7 +160,7 @@ public class UserService  {
         authenticationManager.authenticate(authenticationToken);
 
         String token = jwtGenerator.generateToken(userExist);
-
+        log.info("Token generated: {}", token);
         return token;
     }
 

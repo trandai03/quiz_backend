@@ -9,6 +9,7 @@ import org.do_an.quiz_java.dto.UpdateQuizDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.CategoryRepository;
+import org.do_an.quiz_java.repositories.FavoriteQuizRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +44,7 @@ public class QuizService {
     private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
     private final CompetitionQuizService competititonQuizService;
-
+    private final FavoriteQuizRepository favoriteQuizRepository;
     @Caching(
             put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
             evict = @CacheEvict(value = "quiz", allEntries = true)
@@ -215,5 +217,29 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
+    public void addFavoriteQuiz(User user, Quiz quiz) throws DataNotFoundException {
+        FavoriteQuiz favoriteQuiz = favoriteQuizRepository.findByUserIdAndQuizId(user.getId(), quiz.getId());
+        if (favoriteQuiz != null) {
+            throw new DataNotFoundException("Quiz already in favorite list");
+        }
+        FavoriteQuiz newfavoriteQuiz = FavoriteQuiz.builder()
+                .user(user)
+                .quiz(quiz)
+                .build();
+        favoriteQuizRepository.save(newfavoriteQuiz);
+    }
 
+    public void removeFavoriteQuiz(User user, Integer quizId) throws DataNotFoundException {
+        FavoriteQuiz favoriteQuiz = favoriteQuizRepository.findByUserIdAndQuizId(user.getId(), quizId);
+        if (favoriteQuiz == null) {
+            throw new DataNotFoundException("Quiz not found in favorite list");
+        }
+        favoriteQuizRepository.delete(favoriteQuiz);
+    }
+
+    public List<QuizResponse> findFavoriteQuiz(User user) {
+        return favoriteQuizRepository.findByUserId(user.getId()).stream()
+                .map(favoriteQuiz -> QuizResponse.fromEntity(favoriteQuiz.getQuiz()))
+                .collect(Collectors.toList());
+    }
 }

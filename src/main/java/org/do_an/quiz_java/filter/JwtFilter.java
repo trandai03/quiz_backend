@@ -140,6 +140,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 // Quiz
                 Pair.of(String.format("%s/quizs/getAllQuiz", apiPrefix),"GET"),
+                Pair.of(String.format("%s/quizs/category/**", apiPrefix),"GET"),
+//                Pair.of(String.format("%s/quizs/{quiz_id}", apiPrefix),"GET"),
+
 
                 //home
                 Pair.of("/home/**", "GET"),

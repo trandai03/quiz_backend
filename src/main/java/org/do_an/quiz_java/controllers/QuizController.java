@@ -182,5 +182,29 @@ public class QuizController {
         quizService.clearAllQuizCache();
     }
 
+    @PostMapping("/favorite/{quizId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity addFavoriteQuiz(@AuthenticationPrincipal User user,
+                                     @PathVariable Integer quizId) throws DataNotFoundException {
+        Quiz quiz = quizService.findByQuizId(quizId);
+        if (quiz == null) {
+            throw new DataNotFoundException("Quiz not found");
+        }
+        quizService.addFavoriteQuiz(user, quiz);
+        return ResponseEntity.ok(" Add quiz to favorite list successfully " );
+    }
 
+    @DeleteMapping("/unfavorite/{quizId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity removeFavoriteQuiz(@AuthenticationPrincipal User user,
+                                        @PathVariable Integer quizId) throws DataNotFoundException {
+        quizService.removeFavoriteQuiz(user, quizId);
+        return ResponseEntity.ok(" Remove quiz from favorite list successfully " );
+    }
+
+    @GetMapping ("/favorite/user")
+    @PreAuthorize("isAuthenticated()")
+    public List<QuizResponse> findFavoriteQuiz(@AuthenticationPrincipal User user) {
+        return quizService.findFavoriteQuiz(user);
+    }
 }

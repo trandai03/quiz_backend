@@ -58,6 +58,8 @@ public class User implements UserDetails {
     @Column(name="date_of_birth")
     private Date dateOfBirth;
 
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
