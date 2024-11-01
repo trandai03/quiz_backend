@@ -16,7 +16,7 @@ public class QuestionResponse {
     private String question;
     private String createdAt;
     private String quizId;
-    List<QuestionChoiceResponse> questionChoices;
+    List<QuestionChoiceResponse> questionChoice;
 
     public static QuestionResponse fromEntity(Question question) {
         return QuestionResponse.builder()
@@ -24,7 +24,7 @@ public class QuestionResponse {
                 .question(question.getQuestion())
                 .createdAt(question.getCreatedAt().toString())
                 .quizId(question.getQuiz().getId().toString())
-                .questionChoices(QuestionChoiceResponse.fromEntityList(question.getQuestionChoice()))
+                .questionChoice(QuestionChoiceResponse.fromEntityList(question.getQuestionChoice()))
                 .build();
     }
 

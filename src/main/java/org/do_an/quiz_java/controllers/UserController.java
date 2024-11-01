@@ -46,8 +46,8 @@ public class UserController {
         try {
             String tokenGenerate = userService.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
 
-            User userLoginDetail = userService.getUserDetailFromToken(tokenGenerate);
-
+//            User userLoginDetail = userService.getUserDetailFromToken(tokenGenerate);
+            User userLoginDetail = userRepository.findByUsername(userLoginDTO.getUsername()).orElseThrow(() -> new Exception("User not found"));
             Token token = tokenService.addToken(userLoginDetail, tokenGenerate); // Save token to database
 
             LoginResponse loginResponse = modelMapper.map(userLoginDetail, LoginResponse.class);

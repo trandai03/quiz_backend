@@ -1,6 +1,7 @@
 package org.do_an.quiz_java.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.model.Token;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.TokenRepository;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class TokenService {
     private final TokenRepository tokenRepository;
 
@@ -18,7 +21,9 @@ public class TokenService {
         Token userToken = tokenRepository.findByUser(user);
 
         if(userToken != null){
-            tokenRepository.delete(userToken);
+            log.error( "Token already exists, deleting old token" + userToken.getToken());
+            tokenRepository.deleteToken(userToken);
+            tokenRepository.flush();
         }
 
         long expiration = 864000;
