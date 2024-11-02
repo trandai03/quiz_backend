@@ -143,7 +143,7 @@ public class QuizService {
         return uploadResult.get("url").toString();
 
     }
-    @CacheEvict(value = "quiz")
+    @CacheEvict(value = "quiz", allEntries = true)
     public void delete(Integer id) {
         quizRepository.deleteById(id);
     }

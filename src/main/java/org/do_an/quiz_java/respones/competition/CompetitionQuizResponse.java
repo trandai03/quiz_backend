@@ -12,13 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompetitionQuizResponse {
-    private Integer id;
+//    private Integer id;
     private Integer competitionId;
     private QuizResponse quizResponses;
 
     public static CompetitionQuizResponse fromEntity(CompetitionQuiz competitionQuiz) {
         return CompetitionQuizResponse.builder()
-                .id(competitionQuiz.getId())
+//                .id(competitionQuiz.getId())
                 .competitionId(competitionQuiz.getCompetition().getId())
                 .quizResponses(QuizResponse.fromEntity(competitionQuiz.getQuiz()))
                 .build();

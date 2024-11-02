@@ -34,6 +34,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
     List<Quiz> findByCategoryNameContaining(@Param("name") String name, @Param("categoryId") Integer categoryId);
 
     @Override
-    @Query("SELECT q FROM Quiz q WHERE q.competitionQuizzes IS EMPTY AND q.isPublished = true")
+    @Query("SELECT q FROM Quiz q WHERE q.competitionQuizzes IS EMPTY AND q.isPublished = true ORDER BY  q.category.id ASC")
     List<Quiz> findAll();
 }
