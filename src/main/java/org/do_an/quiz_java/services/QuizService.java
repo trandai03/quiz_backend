@@ -11,6 +11,7 @@ import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.CategoryRepository;
 import org.do_an.quiz_java.repositories.FavoriteQuizRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
+import org.do_an.quiz_java.respones.category.CategoryQuizResponse;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -122,6 +124,26 @@ public class QuizService {
                 .collect(Collectors.toList());
 
     }
+    public List<CategoryQuizResponse> getAllQuizByCategory() {
+        return categoryService.findAll().stream()
+                .map(category -> {
+                    List<Quiz> quizzes = quizRepository.findByCategory(category);
+                    if (quizzes.isEmpty()) {
+                        return null; // Skip categories with no quizzes
+                    }
+                    return CategoryQuizResponse.builder()
+                            .id(category.getId())
+                            .name(category.getName())
+                            .count(quizzes.size())
+                            .quizResponses(quizzes.stream()
+                                    .map(QuizResponse::fromEntity)
+                                    .collect(Collectors.toList()))
+                            .build();
+                })
+                .filter(Objects::nonNull) // Remove nulls from the stream
+                .collect(Collectors.toList());
+    }
+
     @Cacheable(value = "quiz" , key = "'findAllQuiz'")
     @Transactional
     public List<QuizResponse> findAllQuiz() {

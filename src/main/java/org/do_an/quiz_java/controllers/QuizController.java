@@ -12,6 +12,7 @@ import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.CategoryRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.Response;
+import org.do_an.quiz_java.respones.category.CategoryQuizResponse;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.do_an.quiz_java.services.CloudinaryService;
@@ -118,6 +119,11 @@ public class QuizController {
     public List<QuizResponse> findAllQuiz() {
 
         return quizService.findAllQuiz();
+    }
+    @GetMapping("/getAllQuizByCategory")
+    public List<CategoryQuizResponse> findAllQuizByCategory() {
+
+        return quizService.getAllQuizByCategory();
     }
     @PostMapping(value = "/submit")
     @PreAuthorize("isAuthenticated()")

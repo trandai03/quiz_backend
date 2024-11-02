@@ -31,6 +31,9 @@ public class ResultService {
         List <Result> results =resultRepository.findByUserId(user.getId());
         List<ResultResponse> resultResponses = new ArrayList<>();
         for(Result result : results){
+            if(result.getCompetition() != null){
+                continue;
+            }
             resultResponses.add(ResultResponse.fromEntity(result));
             log.info("Result: " + result);
         }
@@ -39,7 +42,21 @@ public class ResultService {
         return resultResponses;
 
     }
+    public List<ResultResponse> getResultCompetitionByUser(User user){
+        List <Result> results =resultRepository.findByUserId(user.getId());
+        List<ResultResponse> resultResponses = new ArrayList<>();
+        for(Result result : results){
+            if(result.getCompetition() == null){
+                continue;
+            }
+            resultResponses.add(ResultResponse.fromEntity(result));
+            log.info("Result: " + result);
+        }
 
+        // Return the list of ResultResponse
+        return resultResponses;
+
+    }
     public ResultResponse submit(ResultDTO resultDTO, User user) {
         // Lấy quiz từ cơ sở dữ liệu
         Quiz quiz = quizRepository.findByQuizId(resultDTO.getQuizId());

@@ -38,4 +38,9 @@ public class ResultController {
     public String test(@AuthenticationPrincipal User user){
         return user.getUsername();
     }
+
+    @GetMapping("/competition/user")
+    public List<ResultResponse> getResultCompetitionByUser(@AuthenticationPrincipal User user){
+        return resultService.getResultCompetitionByUser(user);
+    }
 }
