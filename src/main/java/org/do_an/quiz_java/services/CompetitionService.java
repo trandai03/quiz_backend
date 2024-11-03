@@ -28,6 +28,7 @@ public class CompetitionService {
     private final CompetitionRepository competitionRepository;
     private final QuizService quizService;
     private final CompetitionQuizService competititonQuizService;
+    private final ResultService resultService;
     @Cacheable(value = "competitions", key = "'findAllCompetitions'")
     public List<CompetitionResponse> findAll() {
         return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntity).collect(Collectors.toList());
@@ -35,10 +36,20 @@ public class CompetitionService {
     public Competition findById(Integer id) {
         return competitionRepository.findById(id).get();
     }
-
-    public CompetitionResponse findByCode(String  code) {
-        return CompetitionResponse.fromEntity(competitionRepository.findByCode(code));
+    public CompetitionResponse findByIdAndUser(Integer id, User user) {
+        Competition competition = competitionRepository.findById(id).get();
+        boolean isSubmited = resultService.isUserHasResult(user, competition);
+        CompetitionResponse competitionResponse = CompetitionResponse.fromEntity(competition);
+        competitionResponse.setSubmited(isSubmited);
+        return competitionResponse;
     }
+
+    public CompetitionResponse findByCode(String  code, User user) {
+        Competition competition = competitionRepository.findByCode(code);
+        boolean isSubmited = resultService.isUserHasResult(user, competition);
+        CompetitionResponse competitionResponse = CompetitionResponse.fromEntity(competition);
+        competitionResponse.setSubmited(isSubmited);
+        return competitionResponse;}
     @Caching(
             put = @CachePut(value = "competitions", key = "'findAllCompetitions'"),
             evict = @CacheEvict(value = "competitions", allEntries = true)

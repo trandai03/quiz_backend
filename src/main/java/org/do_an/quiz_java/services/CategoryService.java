@@ -27,7 +27,7 @@ public class CategoryService {
             return null;
         }
     }
-    @Cacheable(value = "categories" , key = "#root.methodName")
+//    @Cacheable(value = "categories" , key = "#root.methodName")
     public List<Category> findAll(){
         return categoryRepository.findAll();
     }

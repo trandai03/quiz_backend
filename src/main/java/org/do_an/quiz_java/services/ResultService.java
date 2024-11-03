@@ -163,4 +163,8 @@ public class ResultService {
         }
         return resultResponses;
     }
+
+    public boolean isUserHasResult(User user, Competition competition) {
+        return resultRepository.existsByUserAndCompetition(user,competition);
+    }
 }

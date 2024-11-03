@@ -25,6 +25,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
     @Query("select q from Quiz q where q.id = :id")
     Quiz findByQuizId(Integer id);
 
+
     @Query("select q from Quiz q where q.category = :category and q.competitionQuizzes IS EMPTY and q.isPublished = true")
     List<Quiz> findByCategory(Category category);
 

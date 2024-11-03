@@ -35,13 +35,13 @@ public class CompetitionController {
     }
 
     @GetMapping("/getById/{id}")
-    public CompetitionResponse findById(@PathVariable Integer id) {
-        return CompetitionResponse.fromEntity(competitionService.findById(id));
+    public CompetitionResponse findById(@AuthenticationPrincipal User user,@PathVariable Integer id) {
+        return competitionService.findByIdAndUser(id,user);
     }
 
     @GetMapping("/getByCode/{code}")
-    public CompetitionResponse findById(@PathVariable String code) {
-        return competitionService.findByCode(code);
+    public CompetitionResponse findById(@AuthenticationPrincipal User user,@PathVariable String code) {
+        return competitionService.findByCode(code,user);
     }
 
     @PostMapping("/create")

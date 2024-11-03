@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -125,23 +122,22 @@ public class QuizService {
 
     }
     public List<CategoryQuizResponse> getAllQuizByCategory() {
-        return categoryService.findAll().stream()
-                .map(category -> {
-                    List<Quiz> quizzes = quizRepository.findByCategory(category);
-                    if (quizzes.isEmpty()) {
-                        return null; // Skip categories with no quizzes
-                    }
-                    return CategoryQuizResponse.builder()
-                            .id(category.getId())
-                            .name(category.getName())
-                            .count(quizzes.size())
-                            .quizResponses(quizzes.stream()
-                                    .map(QuizResponse::fromEntity)
-                                    .collect(Collectors.toList()))
-                            .build();
-                })
-                .filter(Objects::nonNull) // Remove nulls from the stream
-                .collect(Collectors.toList());
+        List<Category> categories = categoryService.findAll();
+        List<CategoryQuizResponse> categoryQuizResponses = new ArrayList<>();
+        for(Category category : categories) {
+            List<Quiz> quizzes = quizRepository.findByCategory(category);
+            if(quizzes.isEmpty()) {
+                continue;
+            }
+            CategoryQuizResponse categoryQuizResponse = CategoryQuizResponse.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .count(quizzes.size())
+                    .quizResponses(QuizResponse.fromEntities(quizzes))
+                    .build();
+            categoryQuizResponses.add(categoryQuizResponse);
+        }
+        return categoryQuizResponses;
     }
 
     @Cacheable(value = "quiz" , key = "'findAllQuiz'")

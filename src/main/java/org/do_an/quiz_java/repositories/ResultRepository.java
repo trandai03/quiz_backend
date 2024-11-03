@@ -21,4 +21,5 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
     List<Result> findByUserId(@Param("userId") Integer userId);
 //    List<Result> findByUserId(Integer userId);
 
+    boolean existsByUserAndCompetition(User user, Competition competition);
 }
