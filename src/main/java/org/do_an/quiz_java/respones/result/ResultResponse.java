@@ -2,7 +2,9 @@ package org.do_an.quiz_java.respones.result;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.do_an.quiz_java.model.Competition;
 import org.do_an.quiz_java.model.Result;
+import org.do_an.quiz_java.respones.competition.CompetitionResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +24,7 @@ public class ResultResponse {
     LocalDateTime completedAt;
     Integer submittedTime;
     String username;
-    Integer competitionId;
+    CompetitionResponse competitionResponse;
     List<QuestionResultResponse> resultQuestionResponses;
     public static ResultResponse fromEntity(Result result) {
         return ResultResponse.builder()
@@ -35,7 +37,7 @@ public class ResultResponse {
                 .submittedTime(result.getSubmittedTime())
                 .resultQuestionResponses(QuestionResultResponse.fromEntityList(result.getQuestionResults()))
                 .username(result.getUser().getUsername())
-                .competitionId(result.getCompetition() != null ? result.getCompetition().getId() : null)
+                .competitionResponse(result.getCompetition() != null ? CompetitionResponse.fromEntity(result.getCompetition()) : null)
                 .build();
     }
 }
