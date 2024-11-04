@@ -213,4 +213,9 @@ public class QuizController {
     public List<QuizResponse> findFavoriteQuiz(@AuthenticationPrincipal User user) {
         return quizService.findFavoriteQuiz(user);
     }
+
+    @GetMapping("/favorite/{quizId}")
+    public boolean isFavorite(@AuthenticationPrincipal User user, @PathVariable Integer quizId) {
+        return quizService.isFavorite(user, quizId);
+    }
 }

@@ -2,11 +2,14 @@ package org.do_an.quiz_java.respones.user;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.model.FavoriteQuiz;
 import org.do_an.quiz_java.model.User;
+import org.do_an.quiz_java.respones.quiz.FavoriteQuizResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Getter
@@ -23,6 +26,7 @@ public class UserResponse {
     private Date dateOfBirth;
     private String username;
     private String email;
+    private List<FavoriteQuizResponse> favoriteQuizResponse;
     public static UserResponse fromUser(User user){
        if(user == null){
            log.error("UserResponse {}", (Object) null);
@@ -38,6 +42,7 @@ public class UserResponse {
                 .fullname(user.getFullName())
                 .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
+                .favoriteQuizResponse(FavoriteQuizResponse.fromEntities(user.getFavoriteQuizzes()))
                 .build();
     }
 

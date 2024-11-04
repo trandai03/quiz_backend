@@ -260,4 +260,9 @@ public class QuizService {
                 .map(favoriteQuiz -> QuizResponse.fromEntity(favoriteQuiz.getQuiz()))
                 .collect(Collectors.toList());
     }
+
+    public boolean isFavorite(User user, Integer quizId) {
+        FavoriteQuiz favoriteQuiz = favoriteQuizRepository.findByUserIdAndQuizId(user.getId(), quizId);
+        return favoriteQuiz != null;
+    }
 }

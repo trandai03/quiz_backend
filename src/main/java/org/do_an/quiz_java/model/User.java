@@ -58,7 +58,8 @@ public class User implements UserDetails {
     @Column(name="date_of_birth")
     private Date dateOfBirth;
 
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FavoriteQuiz> favoriteQuizzes;
 
     @PrePersist
     protected void onCreate() {
