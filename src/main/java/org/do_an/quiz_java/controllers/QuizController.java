@@ -111,7 +111,7 @@ public class QuizController {
         return quizService.findQuizByUser(user);
     }
     @GetMapping("category/{category_id}")
-    public List<QuizResponse> findQuizByCategory(@PathVariable Integer category_id) {
+    public CategoryQuizResponse findQuizByCategory(@PathVariable Integer category_id) {
         return quizService.findQuizByCategory(category_id);
     }
 

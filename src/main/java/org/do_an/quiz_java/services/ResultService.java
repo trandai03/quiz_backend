@@ -142,11 +142,8 @@ public class ResultService {
 
     public List<ResultResponse> getResultByCompetition(Integer competitionId) {
         List<Result> results = resultRepository.findByCompetition(competitionRepository.findById(competitionId).get());
-        List<ResultResponse> resultResponses = new ArrayList<>();
-        for (Result result : results) {
-            resultResponses.add(ResultResponse.fromEntity(result));
-        }
-        return resultResponses;
+
+        return ResultResponse.fromEntityList(results);
     }
 
     public ResultResponse getResultById(Integer resultId) {
@@ -167,4 +164,6 @@ public class ResultService {
     public boolean isUserHasResult(User user, Competition competition) {
         return resultRepository.existsByUserAndCompetition(user,competition);
     }
+
+
 }

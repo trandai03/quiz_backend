@@ -57,7 +57,7 @@ public class User implements UserDetails {
 
     @Column(name="date_of_birth")
     private Date dateOfBirth;
-    
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteQuiz> favoriteQuizzes;

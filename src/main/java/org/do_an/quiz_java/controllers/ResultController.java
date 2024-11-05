@@ -43,4 +43,5 @@ public class ResultController {
     public List<ResultResponse> getResultCompetitionByUser(@AuthenticationPrincipal User user){
         return resultService.getResultCompetitionByUser(user);
     }
+    
 }

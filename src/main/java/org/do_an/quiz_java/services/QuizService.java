@@ -115,10 +115,15 @@ public class QuizService {
                 .collect(Collectors.toList());
 
     }
-    public List<QuizResponse> findQuizByCategory(Integer categoryId) {
-        return quizRepository.findByCategory(categoryService.find(categoryId)).stream()
-                .map(QuizResponse::fromEntity)
-                .collect(Collectors.toList());
+    public CategoryQuizResponse findQuizByCategory(Integer categoryId) {
+        Category category = categoryService.find(categoryId);
+        List<Quiz> quizzes = quizRepository.findByCategory(category);
+        return CategoryQuizResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .count(quizzes.size())
+                .quizResponses(QuizResponse.fromEntities(quizzes))
+                .build();
 
     }
     public List<CategoryQuizResponse> getAllQuizByCategory() {

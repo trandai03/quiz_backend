@@ -40,4 +40,7 @@ public class ResultResponse {
                 .competitionResponse(result.getCompetition() != null ? CompetitionResponse.fromEntity(result.getCompetition()) : null)
                 .build();
     }
+    public static List<ResultResponse> fromEntityList(List<Result> results) {
+        return results.stream().map(ResultResponse::fromEntity).toList();
+    }
 }
