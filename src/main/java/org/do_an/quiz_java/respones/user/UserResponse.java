@@ -42,7 +42,7 @@ public class UserResponse {
                 .fullname(user.getFullName())
                 .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
-                .favoriteQuizResponse(FavoriteQuizResponse.fromEntities(user.getFavoriteQuizzes()))
+                .favoriteQuizResponse(user.getFavoriteQuizzes() != null ? FavoriteQuizResponse.fromEntities(user.getFavoriteQuizzes()) : null)
                 .build();
     }
 
