@@ -122,7 +122,7 @@ public class QuizService {
                 .id(category.getId())
                 .name(category.getName())
                 .count(quizzes.size())
-                .quizResponses(QuizResponse.fromEntities(quizzes))
+                .quizResponses(QuizResponse.fromEntitiesPreview(quizzes))
                 .build();
 
     }

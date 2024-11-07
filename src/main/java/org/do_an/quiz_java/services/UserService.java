@@ -1,6 +1,5 @@
 package org.do_an.quiz_java.services;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +75,11 @@ public class UserService  {
                 .verificationExpiration(LocalDateTime.now().plusMinutes(15))
                 .build();
         //emailService.sendEmail(newUser.getEmail(),"Verification code" , "123");
-        sendVerificationEmail(newUser);
+        try {
+            sendVerificationEmail(newUser);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
 
         // Save User entity to generate ID
         newUser = userRepository.save(newUser);
@@ -289,36 +292,36 @@ public class UserService  {
         }
     }
 
-    public String generateAuthUrl(String loginType) {
-        String url = "";
-        loginType = loginType.trim().toLowerCase(); // Normalize the login type
-
-//        if ("google".equals(loginType)) {
-//            GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(
-//                    googleClientId,
-//                    googleRedirectUri,
-//                    Arrays.asList("email", "profile", "openid"));
-//            url = urlBuilder.build();
-//        } else if ("facebook".equals(loginType)) {
-//            /*
-//            url = String.format("https://www.facebook.com/v3.2/dialog/oauth?client_id=%s&redirect_uri=%s&scope=email,public_profile&response_type=code",
-//                    facebookClientId, facebookRedirectUri);
-//             */
-//            url = UriComponentsBuilder
-//                    .fromUriString(facebookAuthUri)
-//                    .queryParam("client_id", facebookClientId)
-//                    .queryParam("redirect_uri", facebookRedirectUri)
-//                    .queryParam("scope", "email,public_profile")
-//                    .queryParam("response_type", "code")
-//                    .build()
-//                    .toUriString();
-//        }
-        GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(
-                googleClientId,
-                googleRedirectUri,
-                Arrays.asList("email", "profile", "openid"));
-        url = urlBuilder.build();
-        return url;
-    }
+//    public String generateAuthUrl(String loginType) {
+//        String url = "";
+//        loginType = loginType.trim().toLowerCase(); // Normalize the login type
+//
+////        if ("google".equals(loginType)) {
+////            GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(
+////                    googleClientId,
+////                    googleRedirectUri,
+////                    Arrays.asList("email", "profile", "openid"));
+////            url = urlBuilder.build();
+////        } else if ("facebook".equals(loginType)) {
+////            /*
+////            url = String.format("https://www.facebook.com/v3.2/dialog/oauth?client_id=%s&redirect_uri=%s&scope=email,public_profile&response_type=code",
+////                    facebookClientId, facebookRedirectUri);
+////             */
+////            url = UriComponentsBuilder
+////                    .fromUriString(facebookAuthUri)
+////                    .queryParam("client_id", facebookClientId)
+////                    .queryParam("redirect_uri", facebookRedirectUri)
+////                    .queryParam("scope", "email,public_profile")
+////                    .queryParam("response_type", "code")
+////                    .build()
+////                    .toUriString();
+////        }
+//        GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(
+//                googleClientId,
+//                googleRedirectUri,
+//                Arrays.asList("email", "profile", "openid"));
+//        url = urlBuilder.build();
+//        return url;
+//    }
 
 }

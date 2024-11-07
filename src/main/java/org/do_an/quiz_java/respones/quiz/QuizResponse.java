@@ -27,6 +27,7 @@ public class QuizResponse {
     private Boolean isPublished ;
     private CategoryResponse categoryResponse;
     private String usernameCreated;
+    private Integer totalQuestions;
     private String image;
 
 
@@ -41,6 +42,7 @@ public class QuizResponse {
             .categoryResponse(CategoryResponse.fromEntity(quiz.getCategory()))
             .usernameCreated(quiz.getCreatedBy().getUsername())
             .image(quiz.getImage())
+            .totalQuestions(quiz.getTotalQuestions())
             .build();
     }
     public static List<QuizResponse> fromEntities(List<Quiz> quizzes) {
@@ -54,7 +56,9 @@ public class QuizResponse {
                 .createdAt(quiz.getCreatedAt())
                 .isPublished(quiz.getIsPublished())
                 .usernameCreated(quiz.getCreatedBy().getUsername())
+                .totalQuestions(quiz.getTotalQuestions())
                 .image(quiz.getImage())
+                .categoryResponse(CategoryResponse.fromEntity(quiz.getCategory()))
                 .build();
     }
     public static List<QuizResponse> fromEntitiesPreview(List<Quiz> quizzes) {
