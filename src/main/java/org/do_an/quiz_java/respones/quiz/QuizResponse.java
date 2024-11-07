@@ -45,4 +45,18 @@ public class QuizResponse {
     public static List<QuizResponse> fromEntities(List<Quiz> quizzes) {
         return quizzes.stream().map(QuizResponse::fromEntity).toList();
     }
+    public  static QuizResponse fromEntityPreview(Quiz quiz) {
+        return QuizResponse.builder()
+                .id(quiz.getId())
+                .title(quiz.getTitle())
+                .description(quiz.getDescription())
+                .createdAt(quiz.getCreatedAt())
+                .isPublished(quiz.getIsPublished())
+                .usernameCreated(quiz.getCreatedBy().getUsername())
+                .image(quiz.getImage())
+                .build();
+    }
+    public static List<QuizResponse> fromEntitiesPreview(List<Quiz> quizzes) {
+        return quizzes.stream().map(QuizResponse::fromEntityPreview).toList();
+    }
 }

@@ -49,7 +49,8 @@ public class Quiz {
     @Column(name = "is_published", nullable = false)
     private Boolean isPublished = true;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -63,7 +64,8 @@ public class Quiz {
 
     @Column(name = "total_questions")
     private Integer totalQuestions;
-    
+
+    @JsonIgnore
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CompetitionQuiz> competitionQuizzes = new ArrayList<>();
 

@@ -127,21 +127,24 @@ public class QuizService {
 
     }
     public List<CategoryQuizResponse> getAllQuizByCategory() {
-        List<Category> categories = categoryService.findAll();
+        List<Category> categories = categoryRepository.findAllWithQuizzes();
         List<CategoryQuizResponse> categoryQuizResponses = new ArrayList<>();
-        for(Category category : categories) {
-            List<Quiz> quizzes = quizRepository.findByCategory(category);
-            if(quizzes.isEmpty()) {
+
+        for (Category category : categories) {
+            List<Quiz> quizzes = category.getQuizzes();
+            if (quizzes.isEmpty()) {
                 continue;
             }
+
             CategoryQuizResponse categoryQuizResponse = CategoryQuizResponse.builder()
                     .id(category.getId())
                     .name(category.getName())
                     .count(quizzes.size())
-                    .quizResponses(QuizResponse.fromEntities(quizzes))
+                    .quizResponses(QuizResponse.fromEntitiesPreview(quizzes))
                     .build();
             categoryQuizResponses.add(categoryQuizResponse);
         }
+
         return categoryQuizResponses;
     }
 
@@ -149,7 +152,7 @@ public class QuizService {
     @Transactional
     public List<QuizResponse> findAllQuiz() {
         return quizRepository.findAll().stream()
-                .map(QuizResponse::fromEntity)
+                .map(QuizResponse::fromEntityPreview)
                 .collect(Collectors.toList());
 
     }
