@@ -126,6 +126,7 @@ public class QuizService {
                 .build();
 
     }
+    @Cacheable(value = "quiz" , key = "'findAllQuiz'")
     public List<CategoryQuizResponse> getAllQuizByCategory() {
         List<Category> categories = categoryRepository.findAllWithQuizzes();
         List<CategoryQuizResponse> categoryQuizResponses = new ArrayList<>();
@@ -148,7 +149,7 @@ public class QuizService {
         return categoryQuizResponses;
     }
 
-    @Cacheable(value = "quiz" , key = "'findAllQuiz'")
+//    @Cacheable(value = "quiz" , key = "'findAllQuiz'")
     @Transactional
     public List<QuizResponse> findAllQuiz() {
         return quizRepository.findAll().stream()
