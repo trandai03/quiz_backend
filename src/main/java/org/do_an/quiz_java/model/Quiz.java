@@ -49,7 +49,6 @@ public class Quiz {
     @Column(name = "is_published", nullable = false)
     private Boolean isPublished = true;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;

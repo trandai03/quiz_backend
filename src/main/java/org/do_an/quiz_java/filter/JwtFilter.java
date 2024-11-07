@@ -77,8 +77,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.getWriter().write("Authorization header is missing or invalid");
             }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             log.error("An error occurred: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("An error occurred: " + e.getMessage());
         }
     }

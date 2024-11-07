@@ -17,7 +17,7 @@ public class FavoriteQuizResponse {
     public static FavoriteQuizResponse fromEntity(FavoriteQuiz favoriteQuiz) {
         return FavoriteQuizResponse.builder()
                 .id(favoriteQuiz.getId())
-                .quiz(QuizResponse.fromEntity(favoriteQuiz.getQuiz()))
+                .quiz(QuizResponse.fromEntityPreview(favoriteQuiz.getQuiz()))
                 .build();
     }
     public static List<FavoriteQuizResponse> fromEntities(List<FavoriteQuiz> favoriteQuizzes) {

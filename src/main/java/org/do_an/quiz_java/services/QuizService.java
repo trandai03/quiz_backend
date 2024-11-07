@@ -111,7 +111,7 @@ public class QuizService {
 
     public List<QuizResponse> findQuizByUser(User user) {
         return quizRepository.findByCreatedBy(user).stream()
-                .map(QuizResponse::fromEntity)
+                .map(QuizResponse::fromEntityPreview)
                 .collect(Collectors.toList());
 
     }
@@ -266,7 +266,7 @@ public class QuizService {
 
     public List<QuizResponse> findFavoriteQuiz(User user) {
         return favoriteQuizRepository.findByUserId(user.getId()).stream()
-                .map(favoriteQuiz -> QuizResponse.fromEntity(favoriteQuiz.getQuiz()))
+                .map(favoriteQuiz -> QuizResponse.fromEntityPreview(favoriteQuiz.getQuiz()))
                 .collect(Collectors.toList());
     }
 

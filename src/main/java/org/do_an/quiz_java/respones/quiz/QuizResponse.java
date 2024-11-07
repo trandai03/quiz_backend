@@ -7,6 +7,7 @@ import org.do_an.quiz_java.model.Category;
 import org.do_an.quiz_java.model.Question;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
+import org.do_an.quiz_java.respones.category.CategoryResponse;
 import org.do_an.quiz_java.respones.question.QuestionResponse;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class QuizResponse {
     private LocalDateTime createdAt;
     private List<QuestionResponse> questions;
     private Boolean isPublished ;
-    private Category category;
+    private CategoryResponse categoryResponse;
     private String usernameCreated;
     private String image;
 
@@ -37,7 +38,7 @@ public class QuizResponse {
             .createdAt(quiz.getCreatedAt())
             .questions(QuestionResponse.fromEntityList(quiz.getQuestions()))
             .isPublished(quiz.getIsPublished())
-            .category(quiz.getCategory())
+            .categoryResponse(CategoryResponse.fromEntity(quiz.getCategory()))
             .usernameCreated(quiz.getCreatedBy().getUsername())
             .image(quiz.getImage())
             .build();

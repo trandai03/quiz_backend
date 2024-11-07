@@ -3,6 +3,7 @@ package org.do_an.quiz_java.configuration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.repositories.UserRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ public class SecurityConfig{
     }
 
     @Bean
+    @Cacheable(value = "user", key = "#root.methodName")
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username or password is incorrect"));
     }
