@@ -20,7 +20,7 @@ public class CompetitionQuizResponse {
         return CompetitionQuizResponse.builder()
 //                .id(competitionQuiz.getId())
                 .competitionId(competitionQuiz.getCompetition().getId())
-                .quizResponses(QuizResponse.fromEntityPreview(competitionQuiz.getQuiz()))
+                .quizResponses(QuizResponse.fromEntity(competitionQuiz.getQuiz()))
                 .build();
     }
 

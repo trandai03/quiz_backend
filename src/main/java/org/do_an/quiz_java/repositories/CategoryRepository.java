@@ -13,6 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Optional<Category> findById(Integer id);
 
 
-    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.quizzes")
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.quizzes q WHERE q.isPublished = true AND q.competitionQuizzes IS EMPTY")
     List<Category> findAllWithQuizzes();
 }
