@@ -78,7 +78,7 @@ public class QuizController {
         return quizService.updateQuizWithImage(file, quiz_id);
     }
     @GetMapping("search")
-    public Page<Quiz> searchAll(Pageable pageable, @RequestParam(required = true) String filter,
+    public Page<QuizResponse> searchAll(Pageable pageable, @RequestParam(required = true) String filter,
                                 @RequestParam(required = false, defaultValue = "false") Boolean onlyValid) {
 
         return quizService.search(filter, pageable);

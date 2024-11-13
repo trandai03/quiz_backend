@@ -109,8 +109,9 @@ public class QuizService {
         currentQuiz.setDescription(newQuiz.getDescription());
     }
 
-    public Page<Quiz> search(String query, Pageable pageable) {
-        return quizRepository.searchByName(query, pageable);
+    public Page<QuizResponse> search(String query, Pageable pageable) {
+        return quizRepository.searchByName(query, pageable)
+                .map(QuizResponse::fromEntityPreview);
     }
 
     public List<QuizResponse> findQuizByUser(User user) {
