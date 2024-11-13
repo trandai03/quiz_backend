@@ -1,11 +1,7 @@
 package org.do_an.quiz_java.services;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.do_an.quiz_java.dto.QuestionResultDTO;
-import org.do_an.quiz_java.dto.QuizDTO;
-import org.do_an.quiz_java.dto.ResultDTO;
-import org.do_an.quiz_java.dto.UpdateQuizDTO;
+import org.do_an.quiz_java.dto.*;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.CategoryRepository;
@@ -15,12 +11,19 @@ import org.do_an.quiz_java.respones.category.CategoryQuizResponse;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QuizService {
     private final ModelMapper modelMapper;
-
+    
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
     private final CategoryService categoryService;
@@ -44,6 +47,7 @@ public class QuizService {
     private final CategoryRepository categoryRepository;
     private final CompetitionQuizService competititonQuizService;
     private final FavoriteQuizRepository favoriteQuizRepository;
+    private final ChatClient chatClient;
     @Caching(
             put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
             evict = @CacheEvict(value = "quiz", allEntries = true)
@@ -274,4 +278,28 @@ public class QuizService {
         FavoriteQuiz favoriteQuiz = favoriteQuizRepository.findByUserIdAndQuizId(user.getId(), quizId);
         return favoriteQuiz != null;
     }
+
+    public String generateQuiz(String topic, Integer numberOfQuestions) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+// If chatClient allows setting headers, use it in the request configuration
+        String message = """
+                I want to generate a quiz about %s with %d questions
+                """.formatted(topic, numberOfQuestions);
+        PromptTemplate promptTemplate = new PromptTemplate(message);
+        Prompt prompt = promptTemplate.create(Map.of("topic", topic, "numberOfQuestions", numberOfQuestions));
+        String chatResponse = chatClient.prompt(prompt).call().content();
+        log.info("1");
+        log.info(chatResponse);
+//        System.out.println(chatResponse);
+//        System.out.println(chatResponse.getResult());
+//        System.out.println(chatResponse.getResults());
+//        System.out.println(chatResponse.getResults().get(0));
+
+
+        return chatResponse;
+    }
+
+
 }

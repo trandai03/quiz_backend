@@ -8,10 +8,13 @@ import org.do_an.quiz_java.dto.UpdateUserDTO;
 import org.do_an.quiz_java.dto.UserDTO;
 import org.do_an.quiz_java.dto.VerifyUserDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
+import org.do_an.quiz_java.model.Token;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.TokenRepository;
 import org.do_an.quiz_java.repositories.UserRepository;
+import org.do_an.quiz_java.respones.user.LoginResponse;
 import org.do_an.quiz_java.utils.JwtGenerator;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -47,9 +50,12 @@ public class UserService  {
 //    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
+    private final ModelMapper modelMapper;
+
 
 
     @Transactional
@@ -146,25 +152,31 @@ public class UserService  {
         return String.valueOf(code);
     }
     @Transactional
-    public String login(String username, String password) throws Exception {
+    public LoginResponse login(String username, String password) throws Exception {
         User userExist = userRepository.findByUsername(username)
                 .orElseThrow(() -> new DataNotFoundException("User not exist")); // 1
-
-
         if (!passwordEncoder.matches(password, userExist.getPassword())) {
             throw new BadCredentialsException("Password not match");
         }
-
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 username, password, userExist.getAuthorities()
         );
-
         authenticationManager.authenticate(authenticationToken);
+        Token userToken = tokenRepository.findByUser(userExist);
+        String token;
+        try {
+            if(jwtGenerator.isValidToken(userToken.getToken())){
+                token= userToken.getToken();
+            }else {
+                token= tokenService.addToken(userExist, jwtGenerator.generateToken(userExist)).getToken();
+            }
+        }catch (Exception e){
+            token= tokenService.addToken(userExist, jwtGenerator.generateToken(userExist)).getToken();
+        }
 
-        String token = jwtGenerator.generateToken(userExist);
-        log.info("Token generated: {}", token);
-        return token;
+        LoginResponse loginResponse = modelMapper.map(userExist, LoginResponse.class);
+        loginResponse.setToken(token);
+        return loginResponse;
     }
 
     @Transactional

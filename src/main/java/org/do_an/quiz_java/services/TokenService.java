@@ -39,12 +39,12 @@ public class TokenService {
         return tokenRepository.findByToken(token);
     }
 
-    public boolean isValidToken(String token){
-        Token userToken = tokenRepository.findByToken(token);
-        if(userToken.getExpirationDate().isAfter(LocalDateTime.now())){
-            return true;
-        }else {
-            return false;
-        }
-    }
+//    public boolean isValidToken(String token){
+//        Token userToken = tokenRepository.findByToken(token);
+//        if(userToken.getExpirationDate().isAfter(LocalDateTime.now())){
+//            return true;
+//        }else {
+//            return false;
+//        }
+//    }
 }

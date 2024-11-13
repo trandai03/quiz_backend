@@ -57,12 +57,14 @@ public class JwtGenerator {
     }
 
 
-    public boolean isValidToken(String token, User userDetails) throws TokenExpiredException {
+    public boolean isValidToken(String token) throws TokenExpiredException {
         String username = extractUsername(token);
+        User userDetails = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         Date expirationTime = getExpirationTime(token);
-
+//        Token userToken = tokenRepository.findByUser(userDetails);
         if(expirationTime.before(new Date())) {
-            throw new TokenExpiredException("Token has expired");
+//            throw new TokenExpiredException("Token has expired");
+            return false;
         }
 
         Token existingToken = tokenRepository.findByToken(token);

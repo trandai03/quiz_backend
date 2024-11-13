@@ -218,4 +218,11 @@ public class QuizController {
     public boolean isFavorite(@AuthenticationPrincipal User user, @PathVariable Integer quizId) {
         return quizService.isFavorite(user, quizId);
     }
+
+    @GetMapping("/generate")
+    public ResponseEntity generateQuiz(@RequestParam String topic , @RequestParam Integer numberOfQuestions) {
+        String quizzes= quizService.generateQuiz(topic, numberOfQuestions);
+        log.info( "Quiz generated successfully" + quizzes);
+        return ResponseEntity.ok("Quiz generated successfully");
+    }
 }

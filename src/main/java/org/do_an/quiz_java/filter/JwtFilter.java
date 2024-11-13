@@ -52,7 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     User user = (User) userDetailsService.loadUserByUsername(username);
 
                     try {
-                        if (jwtGenerator.isValidToken(token, user)) {  // Ensure the token is valid for the user
+                        if (jwtGenerator.isValidToken(token)) {  // Ensure the token is valid for the user
                             UsernamePasswordAuthenticationToken authenticationToken =
                                     new UsernamePasswordAuthenticationToken(
                                             user,
