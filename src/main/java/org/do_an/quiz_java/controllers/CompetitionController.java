@@ -68,6 +68,7 @@ public class CompetitionController {
     public ResponseEntity createQuizForCompetition(@AuthenticationPrincipal User user,
                                                    @PathVariable Integer competition_id,
                                                    @RequestBody QuizDTO quizDTO) throws DataNotFoundException {
+        Competition competition = competitionRepository.findById(competition_id).orElseThrow( () -> new DataNotFoundException("Competition not found"));
         competitionService.createQuizForCompetition(user, competition_id, quizDTO);
         return ResponseEntity.ok().build();
     }

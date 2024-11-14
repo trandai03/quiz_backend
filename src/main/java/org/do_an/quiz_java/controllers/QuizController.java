@@ -58,7 +58,7 @@ public class QuizController {
     public QuizResponse save(@AuthenticationPrincipal User user,
                              @RequestBody QuizDTO quizDTO
 //                             @ModelAttribute("file") MultipartFile file
-    ) {
+    ) throws DataNotFoundException {
 
 //        if(result.hasErrors()){
 //            System.out.print("Một hoặc nhiều trường truyền vào không hợp lệ!") ;
