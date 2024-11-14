@@ -52,10 +52,12 @@ public class QuizService {
             put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
             evict = @CacheEvict(value = "quiz", allEntries = true)
     )
-    public Quiz save(QuizDTO quizDTO,  User user) {
+    public Quiz save(QuizDTO quizDTO,  User user) throws DataNotFoundException {
+        Category category = categoryRepository.findById(quizDTO.getCategory_id())
+                .orElseThrow(() -> new DataNotFoundException("Category not found"));
             Quiz quiz = Quiz.builder()
                     .title(quizDTO.getTitle())
-                    .category(categoryService.find(quizDTO.getCategory_id()))
+                    .category(category)
                     .createdBy(user)
                     .description(quizDTO.getDescription())
                     .isPublished(quizDTO.getIsPublished())

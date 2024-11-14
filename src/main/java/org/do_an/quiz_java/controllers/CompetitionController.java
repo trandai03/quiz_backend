@@ -65,11 +65,11 @@ public class CompetitionController {
     }
 
     @PostMapping("/quiz/create/{competition_id}")
-    public CompetitionResponse createQuizForCompetition(@AuthenticationPrincipal User user,
+    public ResponseEntity createQuizForCompetition(@AuthenticationPrincipal User user,
                                                    @PathVariable Integer competition_id,
                                                    @RequestBody QuizDTO quizDTO) throws DataNotFoundException {
         competitionService.createQuizForCompetition(user, competition_id, quizDTO);
-        return CompetitionResponse.fromEntity(competitionService.findById(competition_id));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/quiz/add/{competition_id}")
