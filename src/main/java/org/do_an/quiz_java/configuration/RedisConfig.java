@@ -2,6 +2,7 @@ package org.do_an.quiz_java.configuration;
 
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
@@ -63,12 +64,18 @@ public class RedisConfig {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.registerModule(new ParameterNamesModule());
         objectMapper.findAndRegisterModules();
+        // Global configurations
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // Ignore unknown fields
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT); // Pretty-print JSON
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // ISO date format
+
 //        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_ARRAY);
 //        objectMapper.activateDefaultTyping(
 //                LaissezFaireSubTypeValidator.instance,
 //                ObjectMapper.DefaultTyping.NON_FINAL,
 //                JsonTypeInfo.As.PROPERTY
 //        );
+
         return objectMapper;
     }
 

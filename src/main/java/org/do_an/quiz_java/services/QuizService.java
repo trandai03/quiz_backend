@@ -283,26 +283,49 @@ public class QuizService {
     }
 
     public String generateQuiz(String topic, Integer numberOfQuestions) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        // Validate inputs
+        if (topic == null || topic.isBlank() || numberOfQuestions == null || numberOfQuestions <= 0) {
+            throw new IllegalArgumentException("Invalid topic or number of questions");
+        }
 
-// If chatClient allows setting headers, use it in the request configuration
+        // Construct the message
         String message = """
-                I want to generate a quiz about %s with %d questions
-                """.formatted(topic, numberOfQuestions);
-        PromptTemplate promptTemplate = new PromptTemplate(message);
-        Prompt prompt = promptTemplate.create(Map.of("topic", topic, "numberOfQuestions", numberOfQuestions));
-        String chatResponse = chatClient.prompt(prompt).call().content();
-        log.info("1");
-        log.info(chatResponse);
-//        System.out.println(chatResponse);
-//        System.out.println(chatResponse.getResult());
-//        System.out.println(chatResponse.getResults());
-//        System.out.println(chatResponse.getResults().get(0));
+        I want to generate a quiz have correct answer about %s with %d questions with title and description with format.
+                {
+                  "title": "string",
+                  "description": "string",
+                  "questions": [
+                    {
+                      "question": "string",
+                      "questionChoiceDTOS": [
+                        {
+                          "text": "string",
+                          "isCorrect": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+        """.formatted(topic, numberOfQuestions);
 
+        // Log the message for debugging
 
-        return chatResponse;
+        // Call the chat client and handle potential errors
+//        try {
+//            return chatClient.prompt()
+//                    .user(message)
+//                    .call()
+//                    .content();
+//        } catch (Exception e) {
+//            // Handle exceptions gracefully
+//            System.err.println("Error while generating quiz: " + e.getMessage());
+//            throw new RuntimeException("Failed to generate quiz", e);
+//        }
+        String response = chatClient.prompt().user(message).call().content();
+        System.out.println("Generated : " + response);
+        return response;
     }
+
 
 
 }

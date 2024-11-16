@@ -221,8 +221,10 @@ public class QuizController {
 
     @GetMapping("/generate")
     public ResponseEntity generateQuiz(@RequestParam String topic , @RequestParam Integer numberOfQuestions) {
+        if (numberOfQuestions > 2) {
+            return ResponseEntity.badRequest().body("Đớp ít thôi");
+        }
         String quizzes= quizService.generateQuiz(topic, numberOfQuestions);
-        log.info( "Quiz generated successfully" + quizzes);
         return ResponseEntity.ok("Quiz generated successfully");
     }
 }
