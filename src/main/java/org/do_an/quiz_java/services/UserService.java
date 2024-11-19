@@ -101,6 +101,7 @@ public class UserService  {
             user.setActive(true);
             user.setVerificationCode(null);
             user.setVerificationExpiration(null);
+            user.setPoint(100);
             userRepository.save(user);
         } else {
             throw new DataNotFoundException("Invalid verification code");

@@ -62,6 +62,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteQuiz> favoriteQuizzes;
 
+    @Column(name="point")
+    private Integer point;
+
+    @Column(name="point_used")
+    private Integer pointUsed;
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

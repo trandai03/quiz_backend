@@ -1,5 +1,6 @@
 package org.do_an.quiz_java.controllers;
 
+import com.cloudinary.api.exceptions.BadRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.QuizDTO;
@@ -11,6 +12,7 @@ import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.CategoryRepository;
 import org.do_an.quiz_java.repositories.QuizRepository;
+import org.do_an.quiz_java.repositories.UserRepository;
 import org.do_an.quiz_java.respones.Response;
 import org.do_an.quiz_java.respones.category.CategoryQuizResponse;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
@@ -36,6 +38,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class QuizController {
+    private final UserRepository userRepository;
     private final QuizRepository quizRepository;
     private final QuizService quizService;
 
@@ -220,11 +223,16 @@ public class QuizController {
     }
 
     @GetMapping("/generate")
-    public ResponseEntity generateQuiz(@RequestParam String topic , @RequestParam Integer numberOfQuestions) {
+    public ResponseEntity<Response> generateQuiz(@AuthenticationPrincipal User user, @RequestParam String topic , @RequestParam Integer numberOfQuestions ,@RequestParam String language) {
         if (numberOfQuestions > 2) {
-            return ResponseEntity.badRequest().body("Đớp ít thôi");
+            return ResponseEntity.badRequest().body(new Response("Error","Number of questions must be less than 2", null));
         }
-        String quizzes= quizService.generateQuiz(topic, numberOfQuestions);
-        return ResponseEntity.ok("Quiz generated successfully");
+        if(numberOfQuestions > user.getPoint()) {
+            return ResponseEntity.badRequest().body(new Response("Error","Number of questions must be more than user point", null));
+        }
+        String quizzes= quizService.generateQuiz(topic, numberOfQuestions , language);
+        user.setPoint(user.getPoint() - numberOfQuestions);
+        userRepository.save(user);
+        return ResponseEntity.ok(new Response("Success", "Generate quiz successfully", quizzes));
     }
 }

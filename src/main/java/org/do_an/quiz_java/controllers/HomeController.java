@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.respones.Response;
 import org.do_an.quiz_java.services.UserService;
 import org.do_an.quiz_java.utils.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,10 @@ public class HomeController {
     public ResponseEntity<Object> home(@RequestParam String token) {
         return ResponseEntity.ok().body(token);
 
+    }
+    @GetMapping("/pay-success")
+    public ResponseEntity<Response> paySuccess() {
+        return ResponseEntity.ok().body(new Response("success", "pay-success", "Payment success"));
     }
 }
     //@GetMapping("/")

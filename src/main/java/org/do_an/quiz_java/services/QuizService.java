@@ -282,7 +282,7 @@ public class QuizService {
         return favoriteQuiz != null;
     }
 
-    public String generateQuiz(String topic, Integer numberOfQuestions) {
+    public String generateQuiz(String topic, Integer numberOfQuestions , String language) {
         // Validate inputs
         if (topic == null || topic.isBlank() || numberOfQuestions == null || numberOfQuestions <= 0) {
             throw new IllegalArgumentException("Invalid topic or number of questions");
@@ -290,7 +290,7 @@ public class QuizService {
 
         // Construct the message
         String message = """
-        I want to generate a quiz have correct answer about %s with %d questions with title and description with format.
+        I want to generate a quiz have correct answer about %s with %d questions with title and description with format in %s.
                 {
                   "title": "string",
                   "description": "string",
@@ -306,23 +306,10 @@ public class QuizService {
                     }
                   ]
                 }
-        """.formatted(topic, numberOfQuestions);
+        """.formatted(topic, numberOfQuestions, language);
 
-        // Log the message for debugging
 
-        // Call the chat client and handle potential errors
-//        try {
-//            return chatClient.prompt()
-//                    .user(message)
-//                    .call()
-//                    .content();
-//        } catch (Exception e) {
-//            // Handle exceptions gracefully
-//            System.err.println("Error while generating quiz: " + e.getMessage());
-//            throw new RuntimeException("Failed to generate quiz", e);
-//        }
         String response = chatClient.prompt().user(message).call().content();
-        System.out.println("Generated : " + response);
         return response;
     }
 
