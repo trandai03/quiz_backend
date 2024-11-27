@@ -23,8 +23,17 @@ public class CompetitionQuizResponse {
                 .quizResponses(QuizResponse.fromEntity(competitionQuiz.getQuiz()))
                 .build();
     }
-
+    public static CompetitionQuizResponse fromEntityPreview(CompetitionQuiz competitionQuiz) {
+        return CompetitionQuizResponse.builder()
+//                .id(competitionQuiz.getId())
+                .competitionId(competitionQuiz.getCompetition().getId())
+                .quizResponses(QuizResponse.fromEntityPreview(competitionQuiz.getQuiz()))
+                .build();
+    }
     public static List<CompetitionQuizResponse> fromEntities(List<CompetitionQuiz> competitionQuizzes) {
         return competitionQuizzes.stream().map(CompetitionQuizResponse::fromEntity).toList();
+    }
+    public static List<CompetitionQuizResponse> fromEntitiesPreview(List<CompetitionQuiz> competitionQuizzes) {
+        return competitionQuizzes.stream().map(CompetitionQuizResponse::fromEntityPreview).toList();
     }
 }

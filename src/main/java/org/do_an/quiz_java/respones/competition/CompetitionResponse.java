@@ -38,20 +38,23 @@ public class CompetitionResponse {
                 .startTime(competition.getStartTime().toString())
                 .build();
     }
-    public static CompetitionResponse fromEntityWithUser(Competition competition, User user) {
+    public static CompetitionResponse fromEntityPreview(Competition competition) {
         return CompetitionResponse.builder()
                 .id(competition.getId())
                 .description(competition.getDescription())
                 .time(competition.getTime())
                 .name(competition.getName())
                 .code(competition.getCode())
-                .competitionQuizResponses(competition.getCompetitionQuizzes() == null ? null : CompetitionQuizResponse.fromEntities(competition.getCompetitionQuizzes()))
+                .competitionQuizResponses(competition.getCompetitionQuizzes() == null ? null : CompetitionQuizResponse.fromEntitiesPreview(competition.getCompetitionQuizzes()))
                 .organizedBy(competition.getOrganizedBy().getUsername())
                 .startTime(competition.getStartTime().toString())
                 .build();
     }
     public static List<CompetitionResponse> fromEntities(List<Competition> competitions) {
         return competitions.stream().map(CompetitionResponse::fromEntity).collect(Collectors.toList());
+    }
+    public static List<CompetitionResponse> fromEntitiesPreview(List<Competition> competitions) {
+        return competitions.stream().map(competition -> fromEntityPreview(competition)).collect(Collectors.toList());
     }
 
 }

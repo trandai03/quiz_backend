@@ -31,7 +31,7 @@ public class CompetitionService {
     private final ResultService resultService;
     @Cacheable(value = "competitions", key = "'findAllCompetitions'")
     public List<CompetitionResponse> findAll() {
-        return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntity).collect(Collectors.toList());
+        return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntityPreview).collect(Collectors.toList());
     }
     public Competition findById(Integer id) {
         return competitionRepository.findById(id).get();
@@ -66,8 +66,9 @@ public class CompetitionService {
         return CompetitionResponse.fromEntity(competitionRepository.findById(competition.getId()).get());
     }
     @CacheEvict(value = "competitions", allEntries = true)
-    public void delete(Integer id) {
-        competitionRepository.deleteById(id);
+    public void delete(Competition competition) {
+        competititonQuizService.deleteQuizByCompetition(competition);
+        competitionRepository.delete(competition);
     }
 
     @Caching(

@@ -312,7 +312,9 @@ public class QuizService {
         String response = chatClient.prompt().user(message).call().content();
         return response;
     }
+    public void deleteQuizByCompetitionId(Integer competitionId) {
 
+    }
 
 
 }
