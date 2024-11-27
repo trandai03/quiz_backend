@@ -50,8 +50,9 @@ public class CompetitionController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Integer id) {
-        competitionService.delete(id);
+    public void delete(@PathVariable Integer id) throws DataNotFoundException {
+        Competition competition = competitionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Competition not found"));
+        competitionService.delete(competition);
     }
 
     @PutMapping("/update/{id}")
