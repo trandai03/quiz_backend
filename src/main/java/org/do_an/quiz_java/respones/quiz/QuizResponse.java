@@ -29,6 +29,7 @@ public class QuizResponse {
     private String usernameCreated;
     private Integer totalQuestions;
     private String image;
+    private String type;
 
 
     public  static QuizResponse fromEntity(Quiz quiz) {
@@ -43,6 +44,7 @@ public class QuizResponse {
             .usernameCreated(quiz.getCreatedBy().getUsername())
             .image(quiz.getImage())
             .totalQuestions(quiz.getTotalQuestions())
+            .type(quiz.getType().toString())
             .build();
     }
     public static List<QuizResponse> fromEntities(List<Quiz> quizzes) {
@@ -59,6 +61,7 @@ public class QuizResponse {
                 .totalQuestions(quiz.getTotalQuestions())
                 .image(quiz.getImage())
                 .categoryResponse(CategoryResponse.fromEntity(quiz.getCategory()))
+                .type(quiz.getType().toString())
                 .build();
     }
     public static List<QuizResponse> fromEntitiesPreview(List<Quiz> quizzes) {

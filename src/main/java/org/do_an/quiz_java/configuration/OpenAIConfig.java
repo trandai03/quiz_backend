@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 public class OpenAIConfig {
 
-    @Value("${openai.api.key}")
-    private String apiKey;
+//    @Value("${openai.api.key}")
+//    private String apiKey;
 
 
     @Bean

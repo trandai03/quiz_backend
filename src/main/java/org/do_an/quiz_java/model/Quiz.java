@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.do_an.quiz_java.enums.Type;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -63,6 +64,14 @@ public class Quiz {
 
     @Column(name = "total_questions")
     private Integer totalQuestions;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="type")
+    private Type type;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EssayQuestion> essayQuestions;
 
     @JsonIgnore
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)

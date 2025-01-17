@@ -3,6 +3,7 @@ package org.do_an.quiz_java.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.CompetitionDTO;
+import org.do_an.quiz_java.dto.EssayQuizDTO;
 import org.do_an.quiz_java.dto.QuizDTO;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.Competition;
@@ -29,6 +30,7 @@ public class CompetitionService {
     private final QuizService quizService;
     private final CompetitionQuizService competititonQuizService;
     private final ResultService resultService;
+    private final EssayQuizService essayQuizService;
     @Cacheable(value = "competitions", key = "'findAllCompetitions'")
     public List<CompetitionResponse> findAll() {
         return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntityPreview).collect(Collectors.toList());
@@ -94,6 +96,11 @@ public class CompetitionService {
     )
     public void createQuizForCompetition(User user, Integer competition_id, QuizDTO quizDTO) throws DataNotFoundException {
         Quiz quiz =quizService.save(quizDTO, user);
+        competititonQuizService.save(quiz, competition_id);
+    }
+
+    public void createEssayQuizForCompetition(User user, Integer competition_id, EssayQuizDTO essayQuizDTO) throws DataNotFoundException {
+        Quiz quiz =essayQuizService.save(essayQuizDTO, user);
         competititonQuizService.save(quiz, competition_id);
     }
 

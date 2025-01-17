@@ -195,6 +195,11 @@
 			<version>3.0.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-reactor</artifactId>
+			<version>1.0.0-alpha1</version>
+		</dependency>
 
 
 	</dependencies>

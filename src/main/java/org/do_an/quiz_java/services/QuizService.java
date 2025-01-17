@@ -2,6 +2,7 @@ package org.do_an.quiz_java.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.dto.*;
+import org.do_an.quiz_java.enums.Type;
 import org.do_an.quiz_java.exceptions.DataNotFoundException;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.CategoryRepository;
@@ -62,6 +63,7 @@ public class QuizService {
                     .description(quizDTO.getDescription())
                     .isPublished(quizDTO.getIsPublished())
                     .totalQuestions(quizDTO.getQuestions().size())
+                    .type(Type.MULTIPLE_CHOICE)
                     .createdBy(user).build();
     //        quizRepository.save(quiz);
 
