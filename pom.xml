@@ -32,13 +32,13 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework.ai</groupId>
-				<artifactId>spring-ai-bom</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>org.springframework.ai</groupId>-->
+<!--				<artifactId>spring-ai-bom</artifactId>-->
+<!--				<version>1.0.0-SNAPSHOT</version>-->
+<!--				<type>pom</type>-->
+<!--				<scope>import</scope>-->
+<!--			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
@@ -174,15 +174,15 @@
 <!--			<artifactId>google-api-services-people</artifactId>-->
 <!--			<version>v1-rev537-1.25.0</version>-->
 <!--		</dependency>-->
-		<dependency>
-			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>
-		</dependency>
 <!--		<dependency>-->
-<!--			<groupId>com.fasterxml.jackson.module</groupId>-->
-<!--			<artifactId>jackson-module-kotlin</artifactId>-->
-<!--			<version>2.15.0</version> &lt;!&ndash; or the latest version compatible with your setup &ndash;&gt;-->
+<!--			<groupId>org.springframework.ai</groupId>-->
+<!--			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>-->
 <!--		</dependency>-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-kotlin</artifactId>
+			<version>2.15.0</version> <!-- or the latest version compatible with your setup -->
+		</dependency>
 
 <!--		<dependency>-->
 <!--			<groupId>org.apache.httpcomponents.client5</groupId>-->

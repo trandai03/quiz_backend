@@ -12,10 +12,6 @@ import org.do_an.quiz_java.respones.category.CategoryQuizResponse;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,7 +44,7 @@ public class QuizService {
     private final CategoryRepository categoryRepository;
     private final CompetitionQuizService competititonQuizService;
     private final FavoriteQuizRepository favoriteQuizRepository;
-    private final ChatClient chatClient;
+//    private final ChatClient chatClient;
     @Caching(
             put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
             evict = @CacheEvict(value = "quiz", allEntries = true)
@@ -284,36 +280,36 @@ public class QuizService {
         return favoriteQuiz != null;
     }
 
-    public String generateQuiz(String topic, Integer numberOfQuestions , String language) {
-        // Validate inputs
-        if (topic == null || topic.isBlank() || numberOfQuestions == null || numberOfQuestions <= 0) {
-            throw new IllegalArgumentException("Invalid topic or number of questions");
-        }
-
-        // Construct the message
-        String message = """
-        I want to generate a quiz have correct answer about %s with %d questions with title and description with format in %s.
-                {
-                  "title": "string",
-                  "description": "string",
-                  "questions": [
-                    {
-                      "question": "string",
-                      "questionChoiceDTOS": [
-                        {
-                          "text": "string",
-                          "isCorrect": true
-                        }
-                      ]
-                    }
-                  ]
-                }
-        """.formatted(topic, numberOfQuestions, language);
-
-
-        String response = chatClient.prompt().user(message).call().content();
-        return response;
-    }
+//    public String generateQuiz(String topic, Integer numberOfQuestions , String language) {
+//        // Validate inputs
+//        if (topic == null || topic.isBlank() || numberOfQuestions == null || numberOfQuestions <= 0) {
+//            throw new IllegalArgumentException("Invalid topic or number of questions");
+//        }
+//
+//        // Construct the message
+//        String message = """
+//        I want to generate a quiz have correct answer about %s with %d questions with title and description with format in %s.
+//                {
+//                  "title": "string",
+//                  "description": "string",
+//                  "questions": [
+//                    {
+//                      "question": "string",
+//                      "questionChoiceDTOS": [
+//                        {
+//                          "text": "string",
+//                          "isCorrect": true
+//                        }
+//                      ]
+//                    }
+//                  ]
+//                }
+//        """.formatted(topic, numberOfQuestions, language);
+//
+//
+//        String response = chatClient.prompt().user(message).call().content();
+//        return response;
+//    }
     public void deleteQuizByCompetitionId(Integer competitionId) {
 
     }

@@ -54,5 +54,5 @@ public class EssayQuizService {
         quiz.setEssayQuestions(essayQuestionService.saveAll(quizDTO.getEssayQuestionDTOS(), quiz));
         return quizRepository.save(quiz);
     }
-    public
+
 }

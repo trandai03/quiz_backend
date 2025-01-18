@@ -222,17 +222,17 @@ public class QuizController {
         return quizService.isFavorite(user, quizId);
     }
 
-    @GetMapping("/generate")
-    public ResponseEntity<Response> generateQuiz(@AuthenticationPrincipal User user, @RequestParam String topic , @RequestParam Integer numberOfQuestions ,@RequestParam String language) {
-        if (numberOfQuestions > 2) {
-            return ResponseEntity.badRequest().body(new Response("Error","Number of questions must be less than 2", null));
-        }
-        if(numberOfQuestions > user.getPoint()) {
-            return ResponseEntity.badRequest().body(new Response("Error","Number of questions must be more than user point", null));
-        }
-        String quizzes= quizService.generateQuiz(topic, numberOfQuestions , language);
-        user.setPoint(user.getPoint() - numberOfQuestions);
-        userRepository.save(user);
-        return ResponseEntity.ok(new Response("Success", "Generate quiz successfully", quizzes));
-    }
+//    @GetMapping("/generate")
+//    public ResponseEntity<Response> generateQuiz(@AuthenticationPrincipal User user, @RequestParam String topic , @RequestParam Integer numberOfQuestions ,@RequestParam String language) {
+//        if (numberOfQuestions > 2) {
+//            return ResponseEntity.badRequest().body(new Response("Error","Number of questions must be less than 2", null));
+//        }
+//        if(numberOfQuestions > user.getPoint()) {
+//            return ResponseEntity.badRequest().body(new Response("Error","Number of questions must be more than user point", null));
+//        }
+//        String quizzes= quizService.generateQuiz(topic, numberOfQuestions , language);
+//        user.setPoint(user.getPoint() - numberOfQuestions);
+//        userRepository.save(user);
+//        return ResponseEntity.ok(new Response("Success", "Generate quiz successfully", quizzes));
+//    }
 }
