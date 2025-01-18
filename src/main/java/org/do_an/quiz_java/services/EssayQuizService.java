@@ -34,8 +34,25 @@ public class EssayQuizService {
                 .type(Type.ESSAY)
                 .createdBy(user).build();
         //        quizRepository.save(quiz);
-
-        quiz.setEssayQuestions(essayQuestionService.saveAll(quizDTO.getEssayQuestionDTOS()));
+        quiz = quizRepository.save(quiz);
+        quiz.setEssayQuestions(essayQuestionService.saveAll(quizDTO.getEssayQuestionDTOS(), quiz));
         return quizRepository.save(quiz);
     }
+
+    public Quiz update(QuizDTO quizDTO, User user, Integer quizId) throws DataNotFoundException {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new DataNotFoundException("Quiz not found"));
+        Category category = categoryRepository.findById(quizDTO.getCategory_id())
+                .orElseThrow(() -> new DataNotFoundException("Category not found"));
+        quiz.setTitle(quizDTO.getTitle());
+        quiz.setCategory(category);
+        quiz.setDescription(quizDTO.getDescription());
+        quiz.setIsPublished(quizDTO.getIsPublished());
+        quiz.setTotalQuestions(quizDTO.getEssayQuestionDTOS().size());
+        quiz.setType(Type.ESSAY);
+        quiz.setCreatedBy(user);
+        quiz.setEssayQuestions(essayQuestionService.saveAll(quizDTO.getEssayQuestionDTOS(), quiz));
+        return quizRepository.save(quiz);
+    }
+    public
 }

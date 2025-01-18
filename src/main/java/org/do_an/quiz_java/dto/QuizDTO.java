@@ -1,6 +1,8 @@
 package org.do_an.quiz_java.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +15,8 @@ import java.util.List;
  */
 @Value
 @ToString
+@Getter
+@Setter
 public class QuizDTO {
     @NotNull
     String title;

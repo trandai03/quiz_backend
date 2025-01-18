@@ -9,7 +9,7 @@ import java.io.Serializable;
  * DTO for {@link org.do_an.quiz_java.model.EssayQuestion}
  */
 @Value
-public class EssayQuestionDTO implements Serializable {
+public class EssayQuestionDTO  {
     @NotNull
     String questionText;
     @NotNull

@@ -95,12 +95,18 @@ public class CompetitionService {
             evict = @CacheEvict(value = "competitions", allEntries = true)
     )
     public void createQuizForCompetition(User user, Integer competition_id, QuizDTO quizDTO) throws DataNotFoundException {
-        Quiz quiz =quizService.save(quizDTO, user);
+        Quiz quiz  = new Quiz();
+        if(quizDTO.getType().equals("MULTIPLE_CHOICE")) {
+            quiz =quizService.save(quizDTO, user);
+        } else {
+            quiz =essayQuizService.save(quizDTO, user);
+        }
+
         competititonQuizService.save(quiz, competition_id);
     }
 
-    public void createEssayQuizForCompetition(User user, Integer competition_id, EssayQuizDTO essayQuizDTO) throws DataNotFoundException {
-        Quiz quiz =essayQuizService.save(essayQuizDTO, user);
+    public void createEssayQuizForCompetition(User user, Integer competition_id, QuizDTO quizDTO) throws DataNotFoundException {
+        Quiz quiz =essayQuizService.save(quizDTO, user);
         competititonQuizService.save(quiz, competition_id);
     }
 
