@@ -183,6 +183,11 @@ public class QuizService {
         return resultService.submit(resultDTO,user);
     }
 
+    public ResultResponse submitEssay(EssayResultDTO essayResultDTO, User user) {
+        return resultService.submitEssay(essayResultDTO,user);
+    }
+
+
     @Caching(
             put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
             evict = @CacheEvict(value = "quiz", allEntries = true)

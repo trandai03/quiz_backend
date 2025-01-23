@@ -10,6 +10,7 @@ import org.do_an.quiz_java.model.Competition;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.repositories.CompetitionRepository;
+import org.do_an.quiz_java.repositories.QuizRepository;
 import org.do_an.quiz_java.respones.competition.CompetitionResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -31,6 +32,7 @@ public class CompetitionService {
     private final CompetitionQuizService competititonQuizService;
     private final ResultService resultService;
     private final EssayQuizService essayQuizService;
+    private final QuizRepository quizRepository;
     @Cacheable(value = "competitions", key = "'findAllCompetitions'")
     public List<CompetitionResponse> findAll() {
         return competitionRepository.findAll().stream().map(CompetitionResponse::fromEntityPreview).collect(Collectors.toList());
@@ -120,5 +122,11 @@ public class CompetitionService {
 
     public List<CompetitionResponse> findByUser(User user) {
         return CompetitionResponse.fromEntities(competitionRepository.findByOrganizedBy(user));
+    }
+
+    public void deleteQuizForCompetition(Integer competition_id, Integer quiz_id) throws DataNotFoundException {
+        Quiz quiz = quizRepository.findById(quiz_id).orElseThrow(() -> new DataNotFoundException("Category not found"));
+        Competition competition = competitionRepository.findById(competition_id).orElseThrow(() -> new DataNotFoundException("Competition not found"));
+        competititonQuizService.deleteQuizByCompetitionAndQuiz(competition, quiz);
     }
 }

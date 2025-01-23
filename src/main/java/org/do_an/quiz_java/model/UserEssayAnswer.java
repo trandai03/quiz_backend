@@ -2,14 +2,16 @@ package org.do_an.quiz_java.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_essay_answers")
 public class UserEssayAnswer {
     @Id
@@ -41,5 +43,9 @@ public class UserEssayAnswer {
 
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "result_id", nullable = false)
+    private Result result;
 
 }

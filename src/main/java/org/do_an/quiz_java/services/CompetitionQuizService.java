@@ -34,6 +34,11 @@ public class CompetitionQuizService {
 
     }
 
+    public void deleteQuizByCompetitionAndQuiz(Competition competition, Quiz quiz) {
+        CompetitionQuiz competitionQuiz = competitionQuizRepository.findByCompetitionAndQuiz(competition, quiz);
+        quizRepository.deleteById(competitionQuiz.getQuiz().getId());
+    }
+
 
 
 }

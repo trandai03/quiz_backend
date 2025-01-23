@@ -26,6 +26,7 @@ public class ResultResponse {
     String username;
     CompetitionResponse competitionResponse;
     List<QuestionResultResponse> resultQuestionResponses;
+    List<EssayQuestionResultRespone> essayQuestionResultRespones;
     public static ResultResponse fromEntity(Result result) {
         return ResultResponse.builder()
                 .id(result.getId())
@@ -35,7 +36,8 @@ public class ResultResponse {
                 .totalCorrect(result.getTotalCorrect())
                 .completedAt(result.getCompletedAt())
                 .submittedTime(result.getSubmittedTime())
-                .resultQuestionResponses(QuestionResultResponse.fromEntityList(result.getQuestionResults()))
+                .resultQuestionResponses(result.getQuestionResults() != null ? QuestionResultResponse.fromEntityList(result.getQuestionResults()) : null)
+                .essayQuestionResultRespones(result.getUserEssayAnswers() != null ? EssayQuestionResultRespone.fromEntityList(result.getUserEssayAnswers()) : null)
                 .username(result.getUser().getUsername())
                 .competitionResponse(result.getCompetition() != null ? CompetitionResponse.fromEntity(result.getCompetition()) : null)
                 .build();

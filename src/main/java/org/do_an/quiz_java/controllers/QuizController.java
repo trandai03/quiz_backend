@@ -3,6 +3,7 @@ package org.do_an.quiz_java.controllers;
 import com.cloudinary.api.exceptions.BadRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.dto.EssayResultDTO;
 import org.do_an.quiz_java.dto.QuizDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.dto.UpdateQuizDTO;
@@ -41,9 +42,6 @@ public class QuizController {
     private final UserRepository userRepository;
     private final QuizRepository quizRepository;
     private final QuizService quizService;
-
-    private final QuestionService questionService;
-    private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
     @GetMapping("/getAll")
     public Page<Quiz> findAll(Pageable pageable,
@@ -139,6 +137,19 @@ public class QuizController {
 
         return quizService.submit(resultDTO, user);
     }
+
+    @PostMapping(value = "/submitEssay")
+    @PreAuthorize("isAuthenticated()")
+    public ResultResponse submitEssay(@AuthenticationPrincipal User user,
+                                 @RequestBody EssayResultDTO essayResultDTO ) {
+
+//        if(result.hasErrors()){
+//            System.out.print("Một hoặc nhiều trường truyền vào không hợp lệ!") ;
+//        }
+
+        return quizService.submitEssay(essayResultDTO, user);
+    }
+
     @DeleteMapping("/{quiz_id}")
     @PreAuthorize("isAuthenticated()")
     public void delete(@AuthenticationPrincipal User user, @PathVariable Integer quiz_id) throws DataNotFoundException {

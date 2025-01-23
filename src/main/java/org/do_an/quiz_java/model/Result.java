@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -55,8 +56,10 @@ public class Result {
     private Competition competition;
 
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<QuestionResult> questionResults;
+    private List<QuestionResult> questionResults = new ArrayList<>();
 
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserEssayAnswer> userEssayAnswers= new ArrayList<>();
     @PrePersist
     protected void onCreate() {
         this.completedAt = LocalDateTime.now();

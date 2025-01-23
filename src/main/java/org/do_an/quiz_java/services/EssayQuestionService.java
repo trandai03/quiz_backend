@@ -37,4 +37,8 @@ public class EssayQuestionService {
                 .build()).collect(Collectors.toList());
         return essayQuestionRepository.saveAll(essayQuestions);
     }
+    public EssayQuestion findById(Integer id) {
+        return essayQuestionRepository.findById(id).orElseThrow(()-> new RuntimeException("Essay question not found"));
+    }
+
 }

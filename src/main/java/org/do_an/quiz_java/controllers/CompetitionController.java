@@ -98,4 +98,9 @@ public class CompetitionController {
     public List<CompetitionResponse> findByUser(@AuthenticationPrincipal User user) {
         return competitionService.findByUser(user);
     }
+
+    @DeleteMapping("/quiz/delete/{competition_id}/{quiz_id}")
+    public void deleteQuizForCompetition(@PathVariable Integer competition_id, @PathVariable Integer quiz_id) throws DataNotFoundException {
+        competitionService.deleteQuizForCompetition(competition_id, quiz_id);
+    }
 }

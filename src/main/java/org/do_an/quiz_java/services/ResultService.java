@@ -2,13 +2,14 @@ package org.do_an.quiz_java.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.do_an.quiz_java.chatmodel.Assistant;
+import org.do_an.quiz_java.dto.EssayQuestionResultDTO;
+import org.do_an.quiz_java.dto.EssayResultDTO;
 import org.do_an.quiz_java.dto.QuestionResultDTO;
 import org.do_an.quiz_java.dto.ResultDTO;
 import org.do_an.quiz_java.model.*;
-import org.do_an.quiz_java.repositories.CompetitionRepository;
-import org.do_an.quiz_java.repositories.QuestionChoiceRepository;
-import org.do_an.quiz_java.repositories.QuizRepository;
-import org.do_an.quiz_java.repositories.ResultRepository;
+import org.do_an.quiz_java.repositories.*;
+import org.do_an.quiz_java.respones.GradingResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,16 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class ResultService {
+    private final UserEssayAnswerRepository userEssayAnswerRepository;
+    private final Assistant assistant;
     private final QuestionChoiceRepository questionChoiceRepository;
     private final CompetitionRepository competitionRepository;
     private  final ResultRepository resultRepository;
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
     private final QuestionResultService questionResultService;
+    private final EssayQuestionService essayQuestionService;
+    private final EssayQuestionRepository essayQuestionRepository;
     public List<ResultResponse> getResultByUser(User user){
         List <Result> results =resultRepository.findByUserId(user.getId());
         List<ResultResponse> resultResponses = new ArrayList<>();
@@ -140,6 +145,53 @@ public class ResultService {
         return ResultResponse.fromEntity(result);
     }
 
+    public ResultResponse submitEssay(EssayResultDTO essayResultDTO, User user){
+        Quiz quiz = quizRepository.findByQuizId(essayResultDTO.getQuizId());
+        Result result = Result.builder()
+                .user(user)
+                .submittedTime(essayResultDTO.getSubmittedTime())
+                .quiz(quiz)
+                .competition(competitionRepository.findById(essayResultDTO.getCompetitionId()).get())
+                .totalCorrect(0)
+                .build();
+        resultRepository.save(result);
+        Float totalScore = 0.0f;
+        List<EssayQuestionResultDTO> essayQuestionResultDTOS = essayResultDTO.getEssayQuestionResultDTOS();
+        List<UserEssayAnswer> userEssayAnswers = new ArrayList<>();
+        for( EssayQuestionResultDTO essayQuestionResultDTO : essayQuestionResultDTOS){
+            EssayQuestion essayQuestion = essayQuestionService.findById(essayQuestionResultDTO.getQuestionId());
+            
+
+//
+            String message = "Câu trả lời : " + essayQuestionResultDTO.getAnswer() + "Điểm tối đa : " + essayQuestion.getMaxScore() + "Câu trả lời mẫu : " + essayQuestion.getModelAnswer() + "Tiêu chí chấm điểm : " + essayQuestion.getScoringCriteria();
+            double temperature = 0.2;
+            try {
+                String aiCheck = assistant.teacher(message, temperature);
+
+                GradingResponse response = GradingResponse.parseGradingResponse(aiCheck);
+                UserEssayAnswer userEssayAnswer = UserEssayAnswer.builder()
+                        .user(user)
+                        .question(essayQuestion)
+                        .userAnswer(essayQuestionResultDTO.getAnswer())
+                        .score(response.getScore())
+                        .feedback(response.getFeedback())
+                        .result(result)
+                        .build();
+                userEssayAnswerRepository.save(userEssayAnswer);
+                userEssayAnswers.add(userEssayAnswer);
+                totalScore += response.getScore();
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Lỗi khi gọi API chấm điểm : " + e.getMessage());
+            }
+
+        }
+
+        result.setUserEssayAnswers(userEssayAnswers);
+        result.setScore(totalScore);
+        resultRepository.save(result);
+        return ResultResponse.fromEntity(result);
+
+    }
     public List<ResultResponse> getResultByCompetition(Integer competitionId) {
         List<Result> results = resultRepository.findByCompetition(competitionRepository.findById(competitionId).get());
 
