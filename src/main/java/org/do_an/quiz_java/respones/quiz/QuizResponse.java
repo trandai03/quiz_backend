@@ -3,11 +3,13 @@ package org.do_an.quiz_java.respones.quiz;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.do_an.quiz_java.enums.Type;
 import org.do_an.quiz_java.model.Category;
 import org.do_an.quiz_java.model.Question;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.respones.category.CategoryResponse;
+import org.do_an.quiz_java.respones.question.EssayQuestionResponse;
 import org.do_an.quiz_java.respones.question.QuestionResponse;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ public class QuizResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     private List<QuestionResponse> questions;
+    private List<EssayQuestionResponse> essayQuestions;
     private Boolean isPublished ;
     private CategoryResponse categoryResponse;
     private String usernameCreated;
@@ -38,7 +41,8 @@ public class QuizResponse {
             .title(quiz.getTitle())
             .description(quiz.getDescription())
             .createdAt(quiz.getCreatedAt())
-            .questions(QuestionResponse.fromEntityList(quiz.getQuestions()))
+            .questions(quiz.getType() == Type.MULTIPLE_CHOICE ? QuestionResponse.fromEntityList(quiz.getQuestions()) : null)
+            .essayQuestions(quiz.getType() == Type.ESSAY ? EssayQuestionResponse.fromEntityList(quiz.getEssayQuestions()) : null)
             .isPublished(quiz.getIsPublished())
             .categoryResponse(CategoryResponse.fromEntity(quiz.getCategory()))
             .usernameCreated(quiz.getCreatedBy().getUsername())
