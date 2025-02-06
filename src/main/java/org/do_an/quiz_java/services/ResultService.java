@@ -169,6 +169,10 @@ public class ResultService {
                 String aiCheck = assistant.teacher(message, temperature);
 
                 GradingResponse response = GradingResponse.parseGradingResponse(aiCheck);
+                System.out.println(response.toString());
+                if(response == null){
+                    throw new RuntimeException("Lỗi khi gọi API chấm điểm");
+                }
                 UserEssayAnswer userEssayAnswer = UserEssayAnswer.builder()
                         .user(user)
                         .question(essayQuestion)
