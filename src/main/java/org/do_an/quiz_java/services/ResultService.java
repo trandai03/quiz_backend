@@ -3,10 +3,7 @@ package org.do_an.quiz_java.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.do_an.quiz_java.chatmodel.Assistant;
-import org.do_an.quiz_java.dto.EssayQuestionResultDTO;
-import org.do_an.quiz_java.dto.EssayResultDTO;
-import org.do_an.quiz_java.dto.QuestionResultDTO;
-import org.do_an.quiz_java.dto.ResultDTO;
+import org.do_an.quiz_java.dto.*;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.*;
 import org.do_an.quiz_java.respones.GradingResponse;
@@ -221,5 +218,17 @@ public class ResultService {
         return resultRepository.existsByUserAndCompetition(user,competition);
     }
 
-
+    public ResultResponse updateResult(UpdateResultEssayDTO updateResultEssayDTO) {
+        Result result = resultRepository.findById(updateResultEssayDTO.getId()).get();
+        result.setScore(updateResultEssayDTO.getTotalScore());
+        List<UpdateResultEssayQuestionDTO> updateResultEssayQuestionDTOS = updateResultEssayDTO.getQuestions();
+        for(UpdateResultEssayQuestionDTO updateResultEssayQuestionDTO : updateResultEssayQuestionDTOS){
+            UserEssayAnswer userEssayAnswer = userEssayAnswerRepository.findById(updateResultEssayQuestionDTO.getId()).get();
+            userEssayAnswer.setScore(updateResultEssayQuestionDTO.getScore());
+            userEssayAnswer.setFeedback(updateResultEssayQuestionDTO.getFeedback());
+            userEssayAnswerRepository.save(userEssayAnswer);
+        }
+        resultRepository.save(result);
+        return ResultResponse.fromEntity(result);
+    }
 }

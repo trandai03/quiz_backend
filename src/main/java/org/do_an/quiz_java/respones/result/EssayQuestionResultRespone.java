@@ -14,15 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 public class EssayQuestionResultRespone {
     Integer id;
-    EssayQuestionResponse question;
+//    EssayQuestionResponse question;
     String answer;
     Float score;
+    String feedback;
     public static EssayQuestionResultRespone fromEntity(UserEssayAnswer userEssayAnswer){
         return EssayQuestionResultRespone.builder()
                 .id(userEssayAnswer.getId())
-                .question(EssayQuestionResponse.fromEntity(userEssayAnswer.getQuestion()))
+//                .question(EssayQuestionResponse.fromEntity(userEssayAnswer.getQuestion()))
                 .answer(userEssayAnswer.getUserAnswer())
                 .score(userEssayAnswer.getScore())
+                .feedback(userEssayAnswer.getFeedback())
                 .build();
     }
 
