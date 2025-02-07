@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.do_an.quiz_java.dto.UpdateResultEssayDTO;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.respones.Response;
+import org.do_an.quiz_java.respones.result.ListResultResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.do_an.quiz_java.services.ResultService;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class ResultController {
     }
 
     @GetMapping("/competition/{competitionId}")
-    public List<ResultResponse> getAllResultByCompetition( @PathVariable Integer competitionId){
+    public ListResultResponse getAllResultByCompetition(@PathVariable Integer competitionId){
         return resultService.getResultByCompetition(competitionId);
     }
 

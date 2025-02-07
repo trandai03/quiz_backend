@@ -7,6 +7,7 @@ import org.do_an.quiz_java.dto.*;
 import org.do_an.quiz_java.model.*;
 import org.do_an.quiz_java.repositories.*;
 import org.do_an.quiz_java.respones.GradingResponse;
+import org.do_an.quiz_java.respones.result.ListResultResponse;
 import org.do_an.quiz_java.respones.result.ResultResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -193,10 +194,10 @@ public class ResultService {
         return ResultResponse.fromEntity(result);
 
     }
-    public List<ResultResponse> getResultByCompetition(Integer competitionId) {
+    public ListResultResponse getResultByCompetition(Integer competitionId) {
         List<Result> results = resultRepository.findByCompetition(competitionRepository.findById(competitionId).get());
 
-        return ResultResponse.fromEntityList(results);
+        return ListResultResponse.fromEntity(results);
     }
 
     public ResultResponse getResultById(Integer resultId) {

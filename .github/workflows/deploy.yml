@@ -1,0 +1,51 @@
+name: Deploy Spring Boot App to AWS Linux
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code từ GitHub
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Tạo SSH private key file
+      - name: Create SSH private key file
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+
+      # Deploy ứng dụng lên AWS EC2
+      - name: Deploy to AWS EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+          
+          # Chuyển đến thư mục dự án
+          cd /home/ec2-user/quiz_backend
+          
+          # Dừng Redis Server (nếu đang chạy)
+          redis-cli shutdown || true
+          
+          # Dừng ứng dụng cũ (nếu đang chạy)
+          PID=$(pgrep -f 'quiz_java-0.0.1-SNAPSHOT.jar') && [ ! -z "$PID" ] && kill -9 $PID || true
+          
+          # Kéo code mới nhất từ GitHub
+          git pull origin master
+          
+          # Build project bằng Maven (hoặc Gradle)
+          ./mvnw clean package -DskipTests
+          
+          
+          
+          # Khởi động lại Redis Server
+          nohup redis-server > redis.log 2>&1 &
+
+          # Chạy ứng dụng mới với nohup
+          nohup java -jar target/quiz_java-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+
+          EOF

@@ -45,4 +45,23 @@ public class ResultResponse {
     public static List<ResultResponse> fromEntityList(List<Result> results) {
         return results.stream().map(ResultResponse::fromEntity).toList();
     }
+
+    public static ResultResponse fromEntityPreview(Result result) {
+        return ResultResponse.builder()
+                .id(result.getId())
+                .quizId(result.getQuiz().getId())
+                .quizTitle(result.getQuiz().getTitle())
+                .score(result.getScore())
+                .totalCorrect(result.getTotalCorrect())
+                .completedAt(result.getCompletedAt())
+                .submittedTime(result.getSubmittedTime())
+                .username(result.getUser().getUsername())
+                .resultQuestionResponses(result.getQuestionResults() != null ? QuestionResultResponse.fromEntityList(result.getQuestionResults()) : null)
+                .essayQuestionResultRespones(result.getUserEssayAnswers() != null ? EssayQuestionResultRespone.fromEntityList(result.getUserEssayAnswers()) : null)
+                .build();
+    }
+
+    public static List<ResultResponse> fromEntityListPreview(List<Result> results) {
+        return results.stream().map(ResultResponse::fromEntityPreview).toList();
+    }
 }

@@ -52,6 +52,7 @@ public class Competition {
     private String code;
 
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<CompetitionQuiz> competitionQuizzes = new ArrayList<>();
 
     @PrePersist

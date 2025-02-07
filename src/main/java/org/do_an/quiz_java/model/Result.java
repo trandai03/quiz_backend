@@ -56,9 +56,11 @@ public class Result {
     private Competition competition;
 
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<QuestionResult> questionResults = new ArrayList<>();
 
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<UserEssayAnswer> userEssayAnswers= new ArrayList<>();
     @PrePersist
     protected void onCreate() {

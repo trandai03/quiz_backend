@@ -103,4 +103,5 @@ public class CompetitionController {
     public void deleteQuizForCompetition(@PathVariable Integer competition_id, @PathVariable Integer quiz_id) throws DataNotFoundException {
         competitionService.deleteQuizForCompetition(competition_id, quiz_id);
     }
+
 }
