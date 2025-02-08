@@ -17,6 +17,7 @@ public class CompetitionQuizService {
     private final CompetitionQuizRepository competitionQuizRepository;
     private final CompetitionRepository competitionRepository;
     private final QuizRepository quizRepository;
+    private final QuizService quizService;
     public  void save(Quiz quiz, Integer competitionId) {
         CompetitionQuiz competitionQuiz = CompetitionQuiz.builder()
                 .competition(competitionRepository.findById(competitionId).get())
@@ -29,7 +30,8 @@ public class CompetitionQuizService {
 
         List<CompetitionQuiz> competitionQuizzes = competitionQuizRepository.findByCompetition(competition);
         for (CompetitionQuiz competitionQuiz : competitionQuizzes) {
-            quizRepository.deleteById(competitionQuiz.getQuiz().getId());
+            quizService.deleteQuizByCompetitionQuiz(competitionQuiz);
+//            quizRepository.deleteById(competitionQuiz.getQuiz().getId());
         }
 
     }

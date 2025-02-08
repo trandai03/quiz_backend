@@ -43,7 +43,7 @@ public class ResultController {
         return resultService.getResultCompetitionByUser(user);
     }
 
-    @PostMapping("")
+    @PutMapping("")
     public ResultResponse updateResult(@RequestBody UpdateResultEssayDTO updateResultEssayDTO){
         return resultService.updateResult(updateResultEssayDTO);
     }

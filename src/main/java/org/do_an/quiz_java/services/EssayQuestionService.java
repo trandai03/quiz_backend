@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.do_an.quiz_java.dto.EssayQuestionDTO;
 import org.do_an.quiz_java.model.EssayQuestion;
 import org.do_an.quiz_java.model.Quiz;
+import org.do_an.quiz_java.model.UserEssayAnswer;
 import org.do_an.quiz_java.repositories.EssayQuestionRepository;
+import org.do_an.quiz_java.repositories.UserEssayAnswerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EssayQuestionService {
     private final EssayQuestionRepository essayQuestionRepository;
+    private final UserEssayAnswerRepository userEssayAnswerRepository;
 
     public EssayQuestion save(EssayQuestionDTO essayQuestionDTO, Quiz quiz) {
         EssayQuestion essayQuestion = EssayQuestion.builder().
@@ -41,4 +44,12 @@ public class EssayQuestionService {
         return essayQuestionRepository.findById(id).orElseThrow(()-> new RuntimeException("Essay question not found"));
     }
 
+    public void deleteByQuizId(Integer quizId) {
+        List<EssayQuestion> essayQuestions = essayQuestionRepository.findByQuizId(quizId);
+        for (EssayQuestion essayQuestion : essayQuestions) {
+            userEssayAnswerRepository.deleteByQuestionId(essayQuestion.getId());
+            essayQuestionRepository.deleteById(essayQuestion.getId());
+        }
+
+    }
 }

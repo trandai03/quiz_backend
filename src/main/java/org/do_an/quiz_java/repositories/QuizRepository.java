@@ -1,6 +1,7 @@
 package org.do_an.quiz_java.repositories;
 
 import org.do_an.quiz_java.model.Category;
+import org.do_an.quiz_java.model.CompetitionQuiz;
 import org.do_an.quiz_java.model.Quiz;
 import org.do_an.quiz_java.model.User;
 import org.do_an.quiz_java.respones.quiz.QuizResponse;
@@ -37,4 +38,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
     @Override
     @Query("SELECT q FROM Quiz q WHERE q.competitionQuizzes IS EMPTY AND q.isPublished = true ORDER BY  q.category.id ASC")
     List<Quiz> findAll();
+
+
 }

@@ -42,8 +42,8 @@ public class QuizService {
     private final ResultService resultService;
     private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
-    private final CompetitionQuizService competititonQuizService;
     private final FavoriteQuizRepository favoriteQuizRepository;
+    private final EssayQuestionService essayQuestionService;
 //    private final ChatClient chatClient;
     @Caching(
             put = @CachePut(value = "quiz", key = "'findAllQuiz'"),
@@ -315,8 +315,12 @@ public class QuizService {
 //        String response = chatClient.prompt().user(message).call().content();
 //        return response;
 //    }
-    public void deleteQuizByCompetitionId(Integer competitionId) {
-
+    public void deleteQuizByCompetitionQuiz(CompetitionQuiz competitionQuiz) {
+        Quiz quiz = quizRepository.findById(competitionQuiz.getQuiz().getId()).get();
+        if(quiz.getType()==Type.ESSAY){
+            essayQuestionService.deleteByQuizId(quiz.getId());
+        }
+        quizRepository.deleteById(quiz.getId());
     }
 
 
