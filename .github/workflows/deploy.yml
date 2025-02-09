@@ -38,7 +38,7 @@ jobs:
           git pull origin master
           
           # Build project bằng Maven (hoặc Gradle)
-          ./mvnw clean package -DskipTests
+          mvn clean package -DskipTests
           
           
           
