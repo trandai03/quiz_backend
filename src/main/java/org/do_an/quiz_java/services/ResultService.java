@@ -159,21 +159,27 @@ public class ResultService {
         for( EssayQuestionResultDTO essayQuestionResultDTO : essayQuestionResultDTOS){
             EssayQuestion essayQuestion = essayQuestionService.findById(essayQuestionResultDTO.getQuestionId());
 
-            String message = "Câu trả lời : " + essayQuestionResultDTO.getAnswer() + "Điểm tối đa : " + essayQuestion.getMaxScore() + "Câu trả lời mẫu : " + essayQuestion.getModelAnswer() + "Tiêu chí chấm điểm : " + essayQuestion.getScoringCriteria();
+            String message = String.format(
+                "Câu trả lời: \"%s\"\nĐiểm tối đa: %.2f\nCâu trả lời mẫu: \"%s\"\nTiêu chí chấm điểm: \"%s\"",
+                essayQuestionResultDTO.getAnswer(),
+                essayQuestion.getMaxScore(),
+                essayQuestion.getModelAnswer(),
+                essayQuestion.getScoringCriteria()
+            );
             double temperature = 0.2;
             try {
                 String aiCheck = assistant.teacher(message, temperature);
-                log.info("OpenAI Response: {}", aiCheck); // Thêm log để debug
+                log.info("Raw OpenAI Response: {}", aiCheck);
 
                 if (aiCheck == null || aiCheck.isEmpty()) {
                     throw new RuntimeException("OpenAI returned empty response");
                 }
 
                 GradingResponse response = GradingResponse.parseGradingResponse(aiCheck);
-                log.info("Parsed Response: {}", response); // Thêm log để debug
+                log.info("Parsed Response: {}", response);
 
-                if(response == null){
-                    log.error("Failed to parse response: {}", aiCheck); // Log response gốc khi parse thất bại
+                if (response == null) {
+                    log.error("Failed to parse response. Raw response: {}", aiCheck);
                     throw new RuntimeException("Không thể parse response từ OpenAI");
                 }
 

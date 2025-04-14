@@ -17,8 +17,8 @@ public interface Assistant {
 
 
     String apiKey  = "${langchain4j.open-ai.streaming-chat-model.api-key}";
-    @SystemMessage("Bạn là một người thầy chấm điểm tự luận cho học sinh. Dựa vào đáp án mẫu và tiêu chí cho điểm được cung cấp, hãy chấm điểm dựa vào điểm tối đa và đưa ra nhận xét chi tiết. Trả về kết quả dưới dạng JSON với cấu trúc: { \\\"score\\\": <Điểm>, \\\"feedback\\\": \\\"<Nhận xét>\\\"}.")
-    String teacher(@UserMessage String userMessage,  @V("temperature") double temperature);
+    @SystemMessage("Bạn là một người thầy chấm điểm tự luận. Nhiệm vụ của bạn là chấm điểm và đưa ra nhận xét dựa trên đáp án mẫu và tiêu chí chấm điểm. CHÚ Ý: Chỉ trả về JSON với định dạng chính xác như sau, không thêm bất kỳ ký tự nào khác: {\"score\": <số điểm>, \"feedback\": \"<nhận xét>\"}")
+    String teacher(@UserMessage String userMessage, @V("temperature") double temperature);
 
 //    ChatLanguageModel model = OpenAiChatModel.builder()
 //            .apiKey(System.getenv(apiKey))
