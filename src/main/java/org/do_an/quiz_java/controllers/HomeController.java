@@ -37,12 +37,10 @@ public class HomeController {
     @GetMapping("/test")
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String test() {
-        return """
-                Welcome to FoodOrdering!:)
-                Please check the API documentation at /api-docs
-                Please check the API documentation at /swagger-ui.html
-                Please check the API documentation at /redoc.html
-                """;
+        return "Welcome to Quiz API! :)\n" +
+                "Please check the API documentation at /api-docs\n" +
+                "Please check the API documentation at /swagger-ui.html\n" +
+                "Please check the API documentation at /redoc.html";
     }
     @GetMapping("/home")
     public ResponseEntity<Object> home(@RequestParam String token) {

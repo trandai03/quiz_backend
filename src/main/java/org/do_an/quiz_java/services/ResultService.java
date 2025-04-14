@@ -158,19 +158,25 @@ public class ResultService {
         List<UserEssayAnswer> userEssayAnswers = new ArrayList<>();
         for( EssayQuestionResultDTO essayQuestionResultDTO : essayQuestionResultDTOS){
             EssayQuestion essayQuestion = essayQuestionService.findById(essayQuestionResultDTO.getQuestionId());
-            
 
-//
             String message = "Câu trả lời : " + essayQuestionResultDTO.getAnswer() + "Điểm tối đa : " + essayQuestion.getMaxScore() + "Câu trả lời mẫu : " + essayQuestion.getModelAnswer() + "Tiêu chí chấm điểm : " + essayQuestion.getScoringCriteria();
             double temperature = 0.2;
             try {
                 String aiCheck = assistant.teacher(message, temperature);
+                log.info("OpenAI Response: {}", aiCheck); // Thêm log để debug
+
+                if (aiCheck == null || aiCheck.isEmpty()) {
+                    throw new RuntimeException("OpenAI returned empty response");
+                }
 
                 GradingResponse response = GradingResponse.parseGradingResponse(aiCheck);
-                System.out.println(response.toString());
+                log.info("Parsed Response: {}", response); // Thêm log để debug
+
                 if(response == null){
-                    throw new RuntimeException("Lỗi khi gọi API chấm điểm");
+                    log.error("Failed to parse response: {}", aiCheck); // Log response gốc khi parse thất bại
+                    throw new RuntimeException("Không thể parse response từ OpenAI");
                 }
+
                 UserEssayAnswer userEssayAnswer = UserEssayAnswer.builder()
                         .user(user)
                         .question(essayQuestion)
@@ -182,8 +188,9 @@ public class ResultService {
                 userEssayAnswerRepository.save(userEssayAnswer);
                 userEssayAnswers.add(userEssayAnswer);
                 totalScore += response.getScore();
-            } catch (NumberFormatException e) {
-                throw new RuntimeException("Lỗi khi gọi API chấm điểm : " + e.getMessage());
+            } catch (Exception e) {
+                log.error("Error during essay grading: ", e); // Log đầy đủ stack trace
+                throw new RuntimeException("Lỗi khi chấm điểm: " + e.getMessage());
             }
 
         }

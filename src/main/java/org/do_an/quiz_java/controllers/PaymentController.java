@@ -44,7 +44,7 @@ public class PaymentController {
 
     @PostMapping("")
     public ResponseEntity<?> pay(@AuthenticationPrincipal User user,
-            @RequestParam int amount
+            @RequestParam long amount
 //            ,
 //            @RequestParam(defaultValue = "false", required = false)
 //            boolean isMoMo
