@@ -18,6 +18,7 @@ public class GradingResponse {
     public static GradingResponse parseGradingResponse(String jsonResponse) {
         try {
             // Làm sạch response
+            log.info("Raw Response: {}", jsonResponse);
             String cleanedResponse = cleanJsonResponse(jsonResponse);
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(cleanedResponse, GradingResponse.class);
